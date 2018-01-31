@@ -24,7 +24,7 @@
 import unittest
 import datetime
 
-from vstsclient import VstsClient
+from vstsclient.vstsclient import VstsClient
 from vstsclient.models import (
     Project,
     Iteration,
