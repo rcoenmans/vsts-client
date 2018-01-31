@@ -1,4 +1,6 @@
 build
 dist
-vsts_settings.txt
 __pycache__
+
+vsts_settings.txt
+vsts_client.egg-info
