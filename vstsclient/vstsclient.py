@@ -35,7 +35,8 @@ from ._deserialize import (
     _parse_json_to_project,
     _parse_json_to_workitem,
     _parse_json_to_workitems,
-    _parse_json_to_iteration
+    _parse_json_to_iteration,
+    _parse_json_to_area
 )
 
 from ._conversion import (
@@ -115,6 +116,17 @@ class VstsClient(object):
             'Content-Type': 'application/json'
         }
         return self._perform_request(request, _parse_json_to_workitemtypes)
+
+    # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas?$depth={depth}&api-version=1.0
+    def get_areas(self, project_name, depth=1):
+        request = HTTPRequest()
+        request.method = 'GET'
+        request.path = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
+        request.query = '$depth={}&api-version=1.0'.format(depth)
+        request.headers = {
+            'Content-Type': 'application/json'
+        }
+        return self._perform_request(request, _parse_json_to_area)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations/{iteration}?api-version=1.0
     def get_iteration(self, project_name, name):

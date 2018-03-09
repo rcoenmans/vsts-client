@@ -56,16 +56,9 @@ class VstsClientTest(unittest.TestCase):
 
     def test_create_project(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        project = client.create_project('Essent', 'A test project for Essent', SourceControlType.Git, ProcessTemplate.Agile)
+        project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.Git, ProcessTemplate.Agile)
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
-
-    def test_get_workitems(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        workitems = client.get_workitems_by_id('1')
-        self.assertIsNotNone(workitems)
-        self.assertGreater(len(workitems), 0)
-        self.assertIsInstance(workitems[0], Workitem)
 
     def test_get_iteration(self):
         client = VstsClient(self.instance, self.personal_access_token)
@@ -85,6 +78,22 @@ class VstsClientTest(unittest.TestCase):
         iteration = client.create_iteration(project.name, name, start_date, finish_date)
         self.assertIsNotNone(iteration)
 
+    def test_get_workitems(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        workitems = client.get_workitems_by_id('1')
+        self.assertIsNotNone(workitems)
+        self.assertGreater(len(workitems), 0)
+        self.assertIsInstance(workitems[0], Workitem)
+        
+    def test_get_areas(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        projects = client.get_projects()
+        project = projects[0]
+
+        areas = client.get_areas(project.name, 2)
+        self.assertIsNotNone(areas)
+
     def test_create_workitem(self):
         client = VstsClient(self.instance, self.personal_access_token)
         
@@ -102,3 +111,6 @@ class VstsClientTest(unittest.TestCase):
             self.assertIsInstance(userstory, WorkitemType)
             workitem = client.create_workitem(project.name, userstory.name, 'Test story A', 'This is a test user story')
             self.assertIsNotNone(workitem)
+
+if __name__ == '__main__':
+    unittest.main()

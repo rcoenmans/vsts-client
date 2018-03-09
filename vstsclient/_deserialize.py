@@ -24,6 +24,7 @@
 from .models import (
     Project,
     Iteration,
+    Area,
     Workitem,
     WorkitemType
 )
@@ -65,6 +66,18 @@ def _parse_json_to_iteration(response):
     obj = _map_attrs_values(Iteration, attrs, response)
     obj.attributes.startDate = _utc_string_to_datetime(response['attributes']['startDate'])
     obj.attributes.finishDate = _utc_string_to_datetime(response['attributes']['finishDate'])
+    return obj
+
+def _parse_json_to_area(response):
+    attrs = ['id', 'name', 'identifier', 'url']
+    obj = _map_attrs_values(Area, attrs, response)
+    obj.has_children = bool(response['hasChildren'])
+
+    # Parse child areas
+    if obj.has_children:
+        for child in response['children']:
+            obj.children.append(_parse_json_to_area(child))
+
     return obj
 
 def _map_attrs_values(result_class, attrs, values):

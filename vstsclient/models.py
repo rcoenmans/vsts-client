@@ -52,10 +52,19 @@ class Workitem(object):
         self.url = None
         self.fields = None
 
+class Area(object):
+    def __init__(self):
+        self.id = None
+        self.name = None
+        self.structure_type = 'area'
+        self.has_children = False
+        self.children = []
+
 class Iteration(object):
     def __init__(self):
         self.id = None
         self.name = None
+        self.structure_type = 'iteration'
         self.attributes = Attributes()
         self.attributes.startDate = None,
         self.attributes.finishDate = None
