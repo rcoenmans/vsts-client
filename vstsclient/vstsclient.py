@@ -44,6 +44,10 @@ from ._conversion import (
     _datetime_to_utc_string
 )
 
+from .models import (
+    Operation
+)
+
 class VstsClient(object):
     def __init__(self, instance, personal_access_token):
         # VSTS: {account}.visualstudio.com
@@ -177,13 +181,11 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_workitems)
     
     # PATCH {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workitems/${workItemTypeName}?api-version=1.0
-    def create_workitem(self, project_name, workitem_type_name, title, description=None):
+    def create_workitem(self, project_name, workitem_type_name, operations: []):
         # Create the payload
         payload = []
-        payload.append({ 'op': 'add', 'path': '/fields/System.Title', 'value': str(title) })
-        
-        if description is not None:
-            payload.append({ 'op': 'add', 'path': '/fields/System.Description', 'value': str(description) })
+        for operation in operations:
+            payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
         
         # Create the HTTP Request
         request = HTTPRequest()

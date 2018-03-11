@@ -79,3 +79,14 @@ class QueryResult(object):
         self.as_of = None
         self.columns = []
         self.rows = []
+
+class Operation(object):
+    ADD     = 'add'
+    REPLACE = 'replace'
+    REMOVE  = 'remove'  
+    TEST    = 'test'
+
+    def __init__(self, operation, path, value):
+        self.op = operation
+        self.path = path
+        self.value = value

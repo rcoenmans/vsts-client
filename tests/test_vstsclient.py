@@ -25,13 +25,18 @@ import unittest
 import datetime
 
 from vstsclient.vstsclient import VstsClient
+from vstsclient.constants import (
+    SystemFields,
+    MicrosoftFields
+)
 from vstsclient.models import (
     Project,
     Iteration,
     Workitem,
     WorkitemType,
     ProcessTemplate,
-    SourceControlType
+    SourceControlType,
+    Operation
 )
 
 class VstsClientTest(unittest.TestCase):
@@ -49,8 +54,7 @@ class VstsClientTest(unittest.TestCase):
 
     def test_get_project(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        projects = client.get_projects()
-        project = client.get_project(projects[0].name)
+        project = client.get_project('Contoso')
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
 
@@ -62,20 +66,17 @@ class VstsClientTest(unittest.TestCase):
 
     def test_get_iteration(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        projects = client.get_projects()
-        project = projects[0]
-        iteration = client.get_iteration(project.name, 'Sprint A')
+        iteration = client.get_iteration('Contoso', 'Sprint A')
         self.assertIsNotNone(iteration)       
         self.assertIsInstance(iteration, Iteration) 
 
     def test_create_iteration(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        projects = client.get_projects()
-        project = projects[0]
+
         name = 'Sprint A'
         start_date = datetime.datetime.utcnow()
         finish_date = start_date + datetime.timedelta(days=21)
-        iteration = client.create_iteration(project.name, name, start_date, finish_date)
+        iteration = client.create_iteration('Contoso', name, start_date, finish_date)
         self.assertIsNotNone(iteration)
 
     def test_get_workitems(self):
@@ -87,37 +88,28 @@ class VstsClientTest(unittest.TestCase):
         
     def test_get_areas(self):
         client = VstsClient(self.instance, self.personal_access_token)
-
-        projects = client.get_projects()
-        project = projects[0]
-
-        areas = client.get_areas(project.name, 2)
+        areas = client.get_areas('Contoso', 2)
         self.assertIsNotNone(areas)
 
     def test_create_workitem(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        
-        projects = client.get_projects()
-        project = projects[0]
-        self.assertIsInstance(project, Project)
 
-        workitemtypes = client.get_workitem_types(project.name)
-        userstory = None
-        for workitemtype in workitemtypes:
-            if workitemtype.name == 'User Story':
-                userstory = workitemtype
-        
-        if userstory is not None:
-            self.assertIsInstance(userstory, WorkitemType)
-            workitem = client.create_workitem(project.name, userstory.name, 'Test story A', 'This is a test user story')
-            self.assertIsNotNone(workitem)
+        operations = []
+        operations.append(Operation('add', SystemFields.TITLE, 'Test Story D'))
+        operations.append(Operation('add', SystemFields.DESCRIPTION, 'This is a description'))
+        operations.append(Operation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        operations.append(Operation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        operations.append(Operation('add', SystemFields.TAGS, 'migrated'))
+        operations.append(Operation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
+
+        workitem = client.create_workitem('Contoso', 'User Story', operations)
+        self.assertIsNotNone(workitem)
 
     def test_query(self):
         client = VstsClient(self.instance, self.personal_access_token)
 
         query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
-        result = client.query(query, 'Prijssestraat')
-        
+        result = client.query(query, 'Contoso')        
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.rows)
         self.assertGreater(len(result.rows), 0)
