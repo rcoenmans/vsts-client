@@ -80,13 +80,12 @@ class QueryResult(object):
         self.columns = []
         self.rows = []
 
-class Operation(object):
-    ADD     = 'add'
-    REPLACE = 'replace'
-    REMOVE  = 'remove'  
-    TEST    = 'test'
-
+class JsonPatchOperation(object):
     def __init__(self, operation, path, value):
         self.op = operation
         self.path = path
         self.value = value
+
+class JsonPatchDocument(list):
+    def add(self, operation: JsonPatchOperation):
+        self.append(operation)

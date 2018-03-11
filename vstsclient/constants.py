@@ -43,3 +43,11 @@ class SystemFields(object):
 
 class MicrosoftFields(object):
     VALUE_AREA = '/fields/Microsoft.VSTS.Common.ValueArea'
+
+class State(object):
+    ACTIVE   = 'Active'
+    CLOSED   = 'Closed'
+    NEW      = 'New'
+    REMOVED  = 'Removed'
+    RESOLVED = 'Resolved'
+

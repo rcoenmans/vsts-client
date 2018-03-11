@@ -36,7 +36,8 @@ from vstsclient.models import (
     WorkitemType,
     ProcessTemplate,
     SourceControlType,
-    Operation
+    JsonPatchDocument,
+    JsonPatchOperation
 )
 
 class VstsClientTest(unittest.TestCase):
@@ -91,19 +92,47 @@ class VstsClientTest(unittest.TestCase):
         areas = client.get_areas('Contoso', 2)
         self.assertIsNotNone(areas)
 
-    def test_create_workitem(self):
+    def test_create_user_story(self):
         client = VstsClient(self.instance, self.personal_access_token)
 
-        operations = []
-        operations.append(Operation('add', SystemFields.TITLE, 'Test Story D'))
-        operations.append(Operation('add', SystemFields.DESCRIPTION, 'This is a description'))
-        operations.append(Operation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
-        operations.append(Operation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
-        operations.append(Operation('add', SystemFields.TAGS, 'migrated'))
-        operations.append(Operation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
+        doc = JsonPatchDocument()
+        doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Test Story D'))
+        doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'This is a description'))
+        doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'migrated'))
+        doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
 
-        workitem = client.create_workitem('Contoso', 'User Story', operations)
+        workitem = client.create_workitem('Contoso', 'User Story', doc)
         self.assertIsNotNone(workitem)
+
+    def test_create_epic(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        doc = JsonPatchDocument()
+        doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Epic B'))
+        doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'This is *epic*'))
+        doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'migrated'))
+        doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
+
+        epic = client.create_workitem('Contoso', 'Epic', doc)
+        self.assertIsNotNone(epic)
+
+    def test_create_feature(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        doc = JsonPatchDocument()
+        doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Flying car'))
+        doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'A flying car'))
+        doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
+        doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'migrated'))
+        doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Business'))
+
+        feature = client.create_workitem('Contoso', 'Feature', doc)
+        self.assertIsNotNone(feature)
 
     def test_query(self):
         client = VstsClient(self.instance, self.personal_access_token)
