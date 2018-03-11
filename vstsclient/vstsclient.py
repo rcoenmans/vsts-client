@@ -58,6 +58,9 @@ class VstsClient(object):
             timeout  = 30,
         )
 
+    def set_proxy(self, host, port, user, password):
+        self._http_client.set_proxy(host, port, user, password)
+
     # GET {account}.visualstudio.com/DefaultCollection/_apis/projects
     def get_projects(self):
         request = HTTPRequest()
