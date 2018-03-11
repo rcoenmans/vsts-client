@@ -72,3 +72,10 @@ class Iteration(object):
 class Attributes(object):
     def __init__(self):
         pass
+
+class QueryResult(object):
+    def __init__(self):
+        self.query_type = 'three'
+        self.as_of = None
+        self.columns = []
+        self.rows = []

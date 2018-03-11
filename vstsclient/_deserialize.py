@@ -26,7 +26,8 @@ from .models import (
     Iteration,
     Area,
     Workitem,
-    WorkitemType
+    WorkitemType,
+    QueryResult
 )
 
 from ._conversion import _utc_string_to_datetime
@@ -79,6 +80,21 @@ def _parse_json_to_area(response):
             obj.children.append(_parse_json_to_area(child))
 
     return obj
+
+def _parse_json_to_query_result(response):
+    result = QueryResult()
+    result.query_type = response['queryType']
+    result.as_of      = response['asOf']
+    result.columns    = response['columns']
+    
+    # The actual query results
+    if 'workItems' in response:
+        result.rows = response['workItems']
+
+    if 'workItemRelations' in response: 
+        result.rows = response['workItemRelations']
+    
+    return result
 
 def _map_attrs_values(result_class, attrs, values):
     result = result_class()

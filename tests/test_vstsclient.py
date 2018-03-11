@@ -112,5 +112,15 @@ class VstsClientTest(unittest.TestCase):
             workitem = client.create_workitem(project.name, userstory.name, 'Test story A', 'This is a test user story')
             self.assertIsNotNone(workitem)
 
+    def test_query(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        result = client.query(query, 'Prijssestraat')
+        
+        self.assertIsNotNone(result)
+        self.assertIsNotNone(result.rows)
+        self.assertGreater(len(result.rows), 0)
+
 if __name__ == '__main__':
     unittest.main()

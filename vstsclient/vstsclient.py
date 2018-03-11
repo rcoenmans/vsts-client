@@ -36,7 +36,8 @@ from ._deserialize import (
     _parse_json_to_workitem,
     _parse_json_to_workitems,
     _parse_json_to_iteration,
-    _parse_json_to_area
+    _parse_json_to_area,
+    _parse_json_to_query_result
 )
 
 from ._conversion import (
@@ -194,6 +195,23 @@ class VstsClient(object):
             'Content-Type': 'application/json-patch+json'
         }
         return self._perform_request(request, _parse_json_to_workitem)
+
+    # POST {account}.visualstudio.com/DefaultCollection/[{project}/]_apis/wit/wiql?api-version={version}
+    def query(self, query, project_name=None):
+        request = HTTPRequest()
+        request.method = 'POST'
+        request.path = '/DefaultCollection/_apis/wit/wiql'
+        request.query = 'api-version=1.0'
+        request.headers = {
+            'Content-Type': 'application/json'
+        }
+        request.body = json.dumps({ 'query': query })
+
+        if project_name is not None:
+            request.path = '/DefaultCollection/{}/_apis/wit/wiql'.format(project_name)
+
+        return self._perform_request(request, _parse_json_to_query_result)
+
 
     def _perform_request(self, request, parser=None):
         request.host = self.instance
