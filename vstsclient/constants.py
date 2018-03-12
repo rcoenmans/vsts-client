@@ -51,3 +51,10 @@ class State(object):
     REMOVED  = 'Removed'
     RESOLVED = 'Resolved'
 
+class LinkTypes(object):
+    CHILD   = 'System.LinkTypes.Hierarchy-Forward' 
+    PARENT  = 'System.LinkTypes.Hierarchy-Reverse'
+    RELATED = 'System.LinkTypes.Related'
+
+    ATTACHED_FILE = 'AttachedFile'
+    HYPERLINK     = 'Hyperlink'

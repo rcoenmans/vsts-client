@@ -44,6 +44,9 @@ from ._conversion import (
     _datetime_to_utc_string
 )
 
+from .constants import LinkTypes
+from .models import JsonPatchDocument
+
 class VstsClient(object):
     def __init__(self, instance, personal_access_token):
         # VSTS: {account}.visualstudio.com
@@ -65,22 +68,18 @@ class VstsClient(object):
     # GET {account}.visualstudio.com/DefaultCollection/_apis/projects
     def get_projects(self):
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/_apis/projects'
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/_apis/projects'
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_projects)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/projects/{project}?includeCapabilities=true&api-version=1.0
     def get_project(self, project_name):
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/_apis/projects/{}'.format(project_name)
-        request.query = 'includeCapabilities=true&api-version=1.0'
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/_apis/projects/{}'.format(project_name)
+        request.query   = 'includeCapabilities=true&api-version=1.0'
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_project)
     
     # POST {account}.visualstudio.com/DefaultCollection/_apis/projects?api-version=2.0-preview
@@ -101,46 +100,38 @@ class VstsClient(object):
 
         # Create the HTTP Request
         request = HTTPRequest()
-        request.method = 'POST'
-        request.path = '/DefaultCollection/_apis/projects'
-        request.query = 'api-version=2.0-preview'
-        request.body = json.dumps(payload)
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'POST'
+        request.path    = '/DefaultCollection/_apis/projects'
+        request.query   = 'api-version=2.0-preview'
+        request.body    = json.dumps(payload)
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_project)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workItemTypes?api-version={version}
     def get_workitem_types(self, project_name):
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/{}/_apis/wit/workItemTypes'.format(project_name)
-        request.query = 'api-version=1.0'
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/{}/_apis/wit/workItemTypes'.format(project_name)
+        request.query   = 'api-version=1.0'
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_workitemtypes)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas?$depth={depth}&api-version=1.0
     def get_areas(self, project_name, depth=1):
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
-        request.query = '$depth={}&api-version=1.0'.format(depth)
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
+        request.query   = '$depth={}&api-version=1.0'.format(depth)
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_area)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations/{iteration}?api-version=1.0
     def get_iteration(self, project_name, name):
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, name)
-        request.query = 'api-version=1.0'
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, name)
+        request.query   = 'api-version=1.0'
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_iteration)
 
     # POST {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations?api-version=1.0
@@ -156,28 +147,24 @@ class VstsClient(object):
         
         # Create the HTTP Request
         request = HTTPRequest()
-        request.method = 'POST'
-        request.path = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
-        request.query = 'api-version=1.0'
-        request.body = json.dumps(payload)
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'POST'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
+        request.query   = 'api-version=1.0'
+        request.body    = json.dumps(payload)
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems?ids=297,299,300&api-version=1.0
     def get_workitems_by_id(self, workitem_ids):  
         request = HTTPRequest()
-        request.method = 'GET'
-        request.path = '/DefaultCollection/_apis/wit/workitems'
-        request.query = 'ids={}&api-version=1.0'.format(workitem_ids)
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/_apis/wit/workitems'
+        request.query   = 'ids={}&api-version=1.0'.format(workitem_ids)
+        request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_workitems)
     
     # PATCH {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workitems/${workItemTypeName}?api-version=1.0
-    def create_workitem(self, project_name, workitem_type_name, operations):
+    def create_workitem(self, project_name, workitem_type_name, operations: JsonPatchDocument):
         # Create the payload
         payload = []
         for operation in operations:
@@ -185,25 +172,44 @@ class VstsClient(object):
         
         # Create the HTTP Request
         request = HTTPRequest()
-        request.method = 'PATCH'
-        request.path = '/DefaultCollection/{}/_apis/wit/workitems/${}'.format(project_name, workitem_type_name)
-        request.query = 'api-version=1.0'
-        request.body = json.dumps(payload)
-        request.headers = {
-            'Content-Type': 'application/json-patch+json'
-        }
+        request.method  = 'PATCH'
+        request.path    = '/DefaultCollection/{}/_apis/wit/workitems/${}'.format(project_name, workitem_type_name)
+        request.query   = 'api-version=1.0'
+        request.body    = json.dumps(payload)
+        request.headers = { 'Content-Type': 'application/json-patch+json' }
         return self._perform_request(request, _parse_json_to_workitem)
+
+    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{from_workitem_id}?api-version=1.0
+    def add_link(self, from_workitem_id: int, to_workitem_id: int, link_type: LinkTypes, comment):
+        payload = []
+        payload.append({
+            'op': 'add',
+            'path': '/relations/-',
+            'value': {
+                'rel': link_type,
+                'url': '{}://{}/DefaultCollection/_apis/wit/workItems/{}'.format(self._http_client.protocol, self.instance, to_workitem_id),
+                'attributes': {
+                    'comment': comment
+                }
+            }
+        })
+
+        request = HTTPRequest()
+        request.method  = 'PATCH'
+        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(from_workitem_id)
+        request.query   = 'api-version=1.0'
+        request.body    = json.dumps(payload)
+        request.headers = { 'Content-Type': 'application/json-patch+json' }
+        self._perform_request(request)
 
     # POST {account}.visualstudio.com/DefaultCollection/[{project}/]_apis/wit/wiql?api-version={version}
     def query(self, query, project_name=None):
         request = HTTPRequest()
-        request.method = 'POST'
-        request.path = '/DefaultCollection/_apis/wit/wiql'
-        request.query = 'api-version=1.0'
-        request.headers = {
-            'Content-Type': 'application/json'
-        }
-        request.body = json.dumps({ 'query': query })
+        request.method  = 'POST'
+        request.path    = '/DefaultCollection/_apis/wit/wiql'
+        request.query   = 'api-version=1.0'
+        request.headers = { 'Content-Type': 'application/json' }
+        request.body    = json.dumps({ 'query': query })
 
         if project_name is not None:
             request.path = '/DefaultCollection/{}/_apis/wit/wiql'.format(project_name)

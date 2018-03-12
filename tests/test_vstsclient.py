@@ -27,7 +27,8 @@ import datetime
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import (
     SystemFields,
-    MicrosoftFields
+    MicrosoftFields,
+    LinkTypes
 )
 from vstsclient.models import (
     Project,
@@ -134,11 +135,27 @@ class VstsClientTest(unittest.TestCase):
         feature = client.create_workitem('Contoso', 'Feature', doc)
         self.assertIsNotNone(feature)
 
+    def test_add_link(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        # Get a User Story
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        result = client.query(query, 'Contoso')
+        userstory_id = result.rows[0]['id']
+
+        # Get a Feature
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'Flying car'"
+        result = client.query(query, 'Contoso')
+        feature_id = result.rows[0]['id'] 
+
+        # Link them together using a parent relationship
+        client.add_link(userstory_id, feature_id, LinkTypes.PARENT, "This is a comment")
+
     def test_query(self):
         client = VstsClient(self.instance, self.personal_access_token)
 
         query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
-        result = client.query(query, 'Contoso')        
+        result = client.query(query, 'Contoso')
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.rows)
         self.assertGreater(len(result.rows), 0)
