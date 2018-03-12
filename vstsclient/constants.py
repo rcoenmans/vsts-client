@@ -21,6 +21,13 @@
 # SOFTWARE.
 # -----------------------------------------------------------------------------
 
+class StateFilter(object):
+    WELL_FORMED    = 'WellFormed'
+    CREATE_PENDING = 'CreatePending'
+    DELETING       = 'Deleting'
+    NEW            = 'New'
+    ALL            = 'All'
+
 class SystemFields(object):
     TITLE          = '/fields/System.Title'
     DESCRIPTION    = '/fields/System.Description'

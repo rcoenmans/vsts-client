@@ -29,9 +29,9 @@ from setuptools import setup, find_packages
 if __name__ == "__main__":
     setup(
         name='vsts-client',
-        version='0.0.4',
+        version='0.0.5',
         description='VSTS client library',
-        long_description=open('README.rst', 'r').read(),
+        long_description='This project provides a client library for working with VSTS/TFS projects, areas/iterations, sprints, workitems and tasks.',
         license='MIT License',
         author='Robbie Coenmans',
         author_email='robbie.coenmans@outlook.com',

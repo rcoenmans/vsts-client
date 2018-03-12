@@ -68,10 +68,11 @@ class VstsClient(object):
         self._http_client.set_proxy(host, port, user, password)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/projects
-    def get_projects(self):
+    def get_projects(self, state='WellFormed', top=100, skip=0):
         request = HTTPRequest()
         request.method  = 'GET'
         request.path    = '/DefaultCollection/_apis/projects'
+        request.query   = 'api-version=1.0&stateFilter={}&$top={}&$skip={}'.format(state, top, skip)
         request.headers = { 'Content-Type': 'application/json' }
         return self._perform_request(request, _parse_json_to_projects)
 
@@ -193,6 +194,17 @@ class VstsClient(object):
         request.headers = {'content-type': 'application/json-patch+json'}
         return self._perform_request(request, _parse_json_to_workitem)
 
+    def add_tags(self, workitem_id: int, tags: list):
+        doc = JsonPatchDocument()
+        doc.add(
+            JsonPatchOperation(
+                'add',
+                '/fields/System.Tags',
+                '; '.join(tags)
+            )
+        )
+        return self.update_workitem(workitem_id, doc)
+
     # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{from_workitem_id}?api-version=1.0
     def add_link(self, from_workitem_id: int, to_workitem_id: int, link_type, comment):
         doc = JsonPatchDocument()
@@ -217,7 +229,7 @@ class VstsClient(object):
         request.method  = 'POST'
         request.path    = '/DefaultCollection/_apis/wit/attachments'
         request.query   = 'api-version=1.0&filename={}'.format(filename)
-        request.headers = { 'Content-Type': 'application/octet-stream' }
+        request.headers = {'content-type': 'application/octet-stream'}
         request.body    = data
         return self._perform_request(request, _parse_json_to_attachment)
 
