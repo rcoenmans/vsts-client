@@ -140,6 +140,63 @@ iteration = client.create_iteration(
     finish_date)                # End date
 ```
 
+## Work items
+### By IDs
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+workitems = client.get_workitems_by_id('13,21,34')
+```
+### Get a work item
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+workitem = client.get_workitem(13)
+```
+### Create a work item
+When you create a work item, you can provide values for any of the work item fields.
+```python
+from vstsclient.vstsclient import VstsClient
+from vstsclient.models import JsonPatchDocument
+from vstsclient.models import JsonPatchOperation
+from vstsclient.constants import SystemFields 
+from vstsclient.constants import MicrosoftFields
+
+# Create a JsonPatchDocument and provide the values for the work item fields
+doc = JsonPatchDocument()
+doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Left-side wing'))
+doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Create a left-side wing for our self-flying car.'))
+doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Woody <woody@contoso.com>'))
+doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Buzz <buzz@contoso.com>'))
+doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'wing; left'))
+doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
+
+client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+workitem = client.create_workitem(
+    'Self-flying car'           # Team project name
+    'User Story'                # Work item type (e.g. Epic, Feature, User Story etc.)
+    doc)                        # JsonPatchDocument with operations
+```
+### Update work items
+```python
+from vstsclient.vstsclient import VstsClient
+from vstsclient.models import JsonPatchDocument
+from vstsclient.models import JsonPatchOperation
+from vstsclient.constants import SystemFields 
+from vstsclient.constants import MicrosoftFields
+
+# Create a JsonPatchDocument and provide the values for the fields to update
+doc = JsonPatchDocument()
+doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
+
+client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+workitem = client.update_workitem(
+    13                          # Work item id
+    doc)                        # JsonPatchDocument with operations
+``` 
+
 ## Work item query language (WIQL)
 ### Run a query
 ```python
@@ -153,5 +210,5 @@ result = client.query(query, 'Self-flying car')
 
 for row in result.rows:
     workitem_id = row['id']
-    workitem = client.get_workitems_by_id(id)
+    workitem = client.get_workitem(id)
 ```

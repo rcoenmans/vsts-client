@@ -181,14 +181,23 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_iteration)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems?ids=297,299,300&api-version=1.0
-    def get_workitems_by_id(self, workitem_ids):  
+    def get_workitems_by_id(self, workitem_ids):
         request = HTTPRequest()
         request.method  = 'GET'
         request.path    = '/DefaultCollection/_apis/wit/workitems'
         request.query   = 'ids={}&api-version=1.0'.format(workitem_ids)
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitems)
     
+    # GET {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
+    def get_workitem(self, workitem_id):
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(workitem_id)
+        request.query   = 'api-version=1.0&$expand=all'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_workitem)
+
     # PATCH {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workitems/${workItemTypeName}?api-version=1.0
     def create_workitem(self, project_name, workitem_type_name, document: JsonPatchDocument):
         payload = []
