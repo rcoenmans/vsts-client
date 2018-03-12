@@ -27,6 +27,7 @@ from .models import (
     Area,
     Workitem,
     WorkitemType,
+    Attachment,
     QueryResult
 )
 
@@ -95,6 +96,12 @@ def _parse_json_to_query_result(response):
         result.rows = response['workItemRelations']
     
     return result
+
+def _parse_json_to_attachment(response):
+    attachment = Attachment()
+    attachment.id = response['id']
+    attachment.url = response['url']
+    return attachment
 
 def _map_attrs_values(result_class, attrs, values):
     result = result_class()

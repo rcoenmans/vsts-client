@@ -151,6 +151,30 @@ class VstsClientTest(unittest.TestCase):
         # Link them together using a parent relationship
         client.add_link(userstory_id, feature_id, LinkTypes.PARENT, "This is a comment")
 
+    def test_upload_attachment(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+
+        with open('./tests/vsts_settings.txt', 'rb') as f:
+            attachment = client.upload_attachment('vsts_settings.txt', f)
+            self.assertIsNotNone(attachment)
+
+    def test_add_attachment(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        attachment = None
+
+        # Upload attachment
+        with open('./tests/vsts_settings.txt', 'rb') as f:
+            attachment = client.upload_attachment('vsts_settings.txt', f)
+            
+        # Find a workitem
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        result = client.query(query, 'Contoso')
+        id     = result.rows[0]['id']
+        
+        # Link the attachment
+        workitem = client.add_attachment(id, attachment.url, 'Linking an attachment to a workitem test')
+        self.assertIsNotNone(workitem)
+
     def test_query(self):
         client = VstsClient(self.instance, self.personal_access_token)
 

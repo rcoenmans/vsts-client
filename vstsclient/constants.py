@@ -39,7 +39,8 @@ class SystemFields(object):
     CHANGED_DATE   = '/fields/System.ChangedDate' 
     CHANGED_BY     = '/fields/System.ChangedBy'
 
-    TAGS           = '/fields/System.Tags'
+    TAGS           = '/fields/System.Tags' 
+    HISTORY        = '/fields/System.History'
 
 class MicrosoftFields(object):
     VALUE_AREA = '/fields/Microsoft.VSTS.Common.ValueArea'

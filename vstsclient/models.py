@@ -73,6 +73,11 @@ class Attributes(object):
     def __init__(self):
         pass
 
+class Attachment(object):
+    def __init__(self):
+        self.id = None
+        self.url = None
+
 class QueryResult(object):
     def __init__(self):
         self.query_type = 'three'

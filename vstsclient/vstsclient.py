@@ -26,7 +26,6 @@ import json
 
 from ._http import HTTPRequest
 from ._http.httpclient import _HTTPClient
-
 from ._auth import _get_auth_header
 
 from ._deserialize import (
@@ -37,15 +36,18 @@ from ._deserialize import (
     _parse_json_to_workitems,
     _parse_json_to_iteration,
     _parse_json_to_area,
-    _parse_json_to_query_result
+    _parse_json_to_query_result,
+    _parse_json_to_attachment
 )
 
 from ._conversion import (
     _datetime_to_utc_string
 )
 
-from .constants import LinkTypes
-from .models import JsonPatchDocument
+from .models import ( 
+    JsonPatchDocument,
+    JsonPatchOperation
+)
 
 class VstsClient(object):
     def __init__(self, instance, personal_access_token):
@@ -164,45 +166,80 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_workitems)
     
     # PATCH {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workitems/${workItemTypeName}?api-version=1.0
-    def create_workitem(self, project_name, workitem_type_name, operations: JsonPatchDocument):
-        # Create the payload
+    def create_workitem(self, project_name, workitem_type_name, document: JsonPatchDocument):
         payload = []
-        for operation in operations:
+        for operation in document:
             payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
         
-        # Create the HTTP Request
         request = HTTPRequest()
         request.method  = 'PATCH'
         request.path    = '/DefaultCollection/{}/_apis/wit/workitems/${}'.format(project_name, workitem_type_name)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
-        request.headers = { 'Content-Type': 'application/json-patch+json' }
+        request.headers = {'content-type': 'application/json-patch+json'}
         return self._perform_request(request, _parse_json_to_workitem)
 
-    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{from_workitem_id}?api-version=1.0
-    def add_link(self, from_workitem_id: int, to_workitem_id: int, link_type: LinkTypes, comment):
+    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
+    def update_workitem(self, workitem_id, document: JsonPatchDocument):
         payload = []
-        payload.append({
-            'op': 'add',
-            'path': '/relations/-',
-            'value': {
-                'rel': link_type,
-                'url': '{}://{}/DefaultCollection/_apis/wit/workItems/{}'.format(self._http_client.protocol, self.instance, to_workitem_id),
-                'attributes': {
-                    'comment': comment
-                }
-            }
-        })
+        for operation in document:
+            payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
 
         request = HTTPRequest()
         request.method  = 'PATCH'
-        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(from_workitem_id)
+        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(workitem_id)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
-        request.headers = { 'Content-Type': 'application/json-patch+json' }
-        self._perform_request(request)
+        request.headers = {'content-type': 'application/json-patch+json'}
+        return self._perform_request(request, _parse_json_to_workitem)
 
-    # POST {account}.visualstudio.com/DefaultCollection/[{project}/]_apis/wit/wiql?api-version={version}
+    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{from_workitem_id}?api-version=1.0
+    def add_link(self, from_workitem_id: int, to_workitem_id: int, link_type, comment):
+        doc = JsonPatchDocument()
+        doc.add(
+            JsonPatchOperation(
+                'add', 
+                '/relations/-', 
+                {
+                    'rel': link_type,
+                    'url': '{}://{}/DefaultCollection/_apis/wit/workItems/{}'.format(self._http_client.protocol, self.instance, to_workitem_id),
+                    'attributes': {
+                        'comment': comment
+                    }
+                }
+            )
+        )
+        return self.update_workitem(from_workitem_id, doc)
+
+    # POST {account}.visualstudio.com/DefaultCollection/_apis/wit/attachments?api-version=1.0&filename={string}
+    def upload_attachment(self, filename, data):
+        request = HTTPRequest()
+        request.method  = 'POST'
+        request.path    = '/DefaultCollection/_apis/wit/attachments'
+        request.query   = 'api-version=1.0&filename={}'.format(filename)
+        request.headers = { 'Content-Type': 'application/octet-stream' }
+        request.body    = data
+        return self._perform_request(request, _parse_json_to_attachment)
+
+    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
+    def add_attachment(self, workitem_id, attachment_url, comment):
+        doc = JsonPatchDocument()
+        doc.add(
+            JsonPatchOperation(
+                'add', 
+                '/relations/-', 
+                {
+                    'rel': 'AttachedFile',
+                    'url': attachment_url,
+                    'attributes': {
+                        'comment': comment
+                    }
+                }
+            )
+        )
+        return self.update_workitem(workitem_id, doc)
+
+    # POST {account}.visualstudio.com/DefaultCollection/[{project}/]_apis/wit/wiql?api-version=1.0
     def query(self, query, project_name=None):
         request = HTTPRequest()
         request.method  = 'POST'
