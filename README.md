@@ -159,10 +159,8 @@ workitem = client.get_workitem(13)
 When you create a work item, you can provide values for any of the work item fields.
 ```python
 from vstsclient.vstsclient import VstsClient
-from vstsclient.models import JsonPatchDocument
-from vstsclient.models import JsonPatchOperation
-from vstsclient.constants import SystemFields 
-from vstsclient.constants import MicrosoftFields
+from vstsclient.models import JsonPatchDocument, JsonPatchOperation
+from vstsclient.constants import SystemFields
 
 # Create a JsonPatchDocument and provide the values for the work item fields
 doc = JsonPatchDocument()
@@ -182,10 +180,8 @@ workitem = client.create_workitem(
 ### Update work items
 ```python
 from vstsclient.vstsclient import VstsClient
-from vstsclient.models import JsonPatchDocument
-from vstsclient.models import JsonPatchOperation
-from vstsclient.constants import SystemFields 
-from vstsclient.constants import MicrosoftFields
+from vstsclient.models import JsonPatchDocument, JsonPatchOperation
+from vstsclient.constants import SystemFields
 
 # Create a JsonPatchDocument and provide the values for the fields to update
 doc = JsonPatchDocument()
