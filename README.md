@@ -133,9 +133,25 @@ start_date  = datetime.datetime.utcnow()                # Sprint starts today
 finish_date = start_date + datetime.timedelta(days=21)  # Ends in 3 weeks
 
 client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
-iteration = client.get_iteration(
+iteration = client.create_iteration(
     'Self-flying car',          # Team project name 
     'Sprint 1',                 # Iteration name
     start_date,                 # Start date
     finish_date)                # End date
+```
+
+## Work item query language (WIQL)
+### Run a query
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+
+# Note that the query returns a list of work item ids
+query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'User Story A'"
+result = client.query(query, 'Self-flying car')
+
+for row in result.rows:
+    workitem_id = row['id']
+    workitem = client.get_workitems_by_id(id)
 ```
