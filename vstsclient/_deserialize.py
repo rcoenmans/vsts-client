@@ -64,21 +64,34 @@ def _parse_json_to_workitem(response):
     return _map_attrs_values(Workitem, attrs, response)
 
 def _parse_json_to_iteration(response):
-    attrs = ['id', 'name', 'identifier', 'structureType', 'url']
+    attrs = ['id', 'name', 'identifier', 'url']
     obj = _map_attrs_values(Iteration, attrs, response)
-    obj.attributes.startDate = _utc_string_to_datetime(response['attributes']['startDate'])
-    obj.attributes.finishDate = _utc_string_to_datetime(response['attributes']['finishDate'])
+    
+    if 'attributes' in response:
+        obj.attributes.startDate = _utc_string_to_datetime(response['attributes']['startDate'])
+        obj.attributes.finishDate = _utc_string_to_datetime(response['attributes']['finishDate'])
+    
+    if 'hasChildren' in response:
+        obj.has_children = bool(response['hasChildren'])
+
+        # Parse child iterations
+        if obj.has_children:
+            for child in response['children']:
+                obj.children.append(_parse_json_to_iteration(child))
+
     return obj
 
 def _parse_json_to_area(response):
     attrs = ['id', 'name', 'identifier', 'url']
     obj = _map_attrs_values(Area, attrs, response)
-    obj.has_children = bool(response['hasChildren'])
+    
+    if 'hasChildren' in response:
+        obj.has_children = bool(response['hasChildren'])
 
-    # Parse child areas
-    if obj.has_children:
-        for child in response['children']:
-            obj.children.append(_parse_json_to_area(child))
+        # Parse child areas
+        if obj.has_children:
+            for child in response['children']:
+                obj.children.append(_parse_json_to_area(child))
 
     return obj
 

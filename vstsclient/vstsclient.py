@@ -73,7 +73,7 @@ class VstsClient(object):
         request.method  = 'GET'
         request.path    = '/DefaultCollection/_apis/projects'
         request.query   = 'api-version=1.0&stateFilter={}&$top={}&$skip={}'.format(state, top, skip)
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_projects)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/projects/{project}?includeCapabilities=true&api-version=1.0
@@ -82,7 +82,7 @@ class VstsClient(object):
         request.method  = 'GET'
         request.path    = '/DefaultCollection/_apis/projects/{}'.format(project_name)
         request.query   = 'includeCapabilities=true&api-version=1.0'
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_project)
     
     # POST {account}.visualstudio.com/DefaultCollection/_apis/projects?api-version=2.0-preview
@@ -104,7 +104,7 @@ class VstsClient(object):
         request.path    = '/DefaultCollection/_apis/projects'
         request.query   = 'api-version=2.0-preview'
         request.body    = json.dumps(payload)
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_project)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workItemTypes?api-version={version}
@@ -113,7 +113,7 @@ class VstsClient(object):
         request.method  = 'GET'
         request.path    = '/DefaultCollection/{}/_apis/wit/workItemTypes'.format(project_name)
         request.query   = 'api-version=1.0'
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitemtypes)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas?$depth={depth}&api-version=1.0
@@ -122,8 +122,37 @@ class VstsClient(object):
         request.method  = 'GET'
         request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
         request.query   = '$depth={}&api-version=1.0'.format(depth)
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_area)
+
+    # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas/{area}?api-version=1.0
+    def get_area(self, project_name, name):
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas/{}'.format(project_name, name)
+        request.query   = 'api-version=1.0'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_area)
+
+    # POST {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas?api-version=1.0
+    def create_area(self, project_name, name):
+        payload = { 'name': name }
+        request = HTTPRequest()
+        request.method  = 'POST'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
+        request.query   = 'api-version=1.0'
+        request.body    = json.dumps(payload)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_area)
+
+    # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations?$depth={depth}&api-version=1.0
+    def get_iterations(self, project_name, depth=1):
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
+        request.query   = '$depth={}&api-version=1.0'.format(depth)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_iteration)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations/{iteration}?api-version=1.0
     def get_iteration(self, project_name, name):
@@ -131,12 +160,11 @@ class VstsClient(object):
         request.method  = 'GET'
         request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, name)
         request.query   = 'api-version=1.0'
-        request.headers = { 'Content-Type': 'application/json' }
+        request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_iteration)
 
     # POST {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations?api-version=1.0
     def create_iteration(self, project_name, name, start_date, finish_date):
-        # Create the payload
         payload = {
             'name': name,
             'attributes': {
@@ -144,15 +172,13 @@ class VstsClient(object):
                 'finishDate': _datetime_to_utc_string(finish_date)
             }
         }
-        
-        # Create the HTTP Request
         request = HTTPRequest()
         request.method  = 'POST'
         request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
-        request.headers = { 'Content-Type': 'application/json' }
-        return self._perform_request(request)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_iteration)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems?ids=297,299,300&api-version=1.0
     def get_workitems_by_id(self, workitem_ids):  

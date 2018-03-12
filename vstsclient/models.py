@@ -59,6 +59,8 @@ class Iteration(object):
         self.attributes = Attributes()
         self.attributes.startDate = None,
         self.attributes.finishDate = None
+        self.has_children = False
+        self.children = []
 
 class Attributes(object):
     def __init__(self):

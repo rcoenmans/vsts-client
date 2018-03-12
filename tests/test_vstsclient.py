@@ -66,6 +66,11 @@ class VstsClientTest(unittest.TestCase):
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
 
+    def test_get_iterations(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        iters  = client.get_iterations('Contoso', 2)
+        self.assertIsNotNone(iters)
+
     def test_get_iteration(self):
         client = VstsClient(self.instance, self.personal_access_token)
         iteration = client.get_iteration('Contoso', 'Sprint A')
@@ -81,17 +86,19 @@ class VstsClientTest(unittest.TestCase):
         iteration = client.create_iteration('Contoso', name, start_date, finish_date)
         self.assertIsNotNone(iteration)
 
+    def test_get_areas(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        areas  = client.get_areas('Contoso', 2)
+        self.assertIsNotNone(areas)
+
+        
+
     def test_get_workitems(self):
         client = VstsClient(self.instance, self.personal_access_token)
         workitems = client.get_workitems_by_id('1')
         self.assertIsNotNone(workitems)
         self.assertGreater(len(workitems), 0)
         self.assertIsInstance(workitems[0], Workitem)
-        
-    def test_get_areas(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        areas = client.get_areas('Contoso', 2)
-        self.assertIsNotNone(areas)
 
     def test_create_user_story(self):
         client = VstsClient(self.instance, self.personal_access_token)
