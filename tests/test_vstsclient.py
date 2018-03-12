@@ -26,6 +26,8 @@ import datetime
 
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import (
+    ProcessTemplate,
+    SourceControlType,
     SystemFields,
     MicrosoftFields,
     LinkTypes
@@ -35,8 +37,6 @@ from vstsclient.models import (
     Iteration,
     Workitem,
     WorkitemType,
-    ProcessTemplate,
-    SourceControlType,
     JsonPatchDocument,
     JsonPatchOperation
 )
@@ -62,7 +62,7 @@ class VstsClientTest(unittest.TestCase):
 
     def test_create_project(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.Git, ProcessTemplate.Agile)
+        project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.GIT, ProcessTemplate.AGILE)
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
 

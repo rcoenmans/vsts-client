@@ -21,15 +21,6 @@
 # SOFTWARE.
 # -----------------------------------------------------------------------------
 
-class ProcessTemplate(object):
-    Agile = 'adcc42ab-9882-485e-a3ed-7678f01f66bc'
-    Scrum = '6b724908-ef14-45cf-84f8-768b5384da45'
-    CMMI = '27450541-8e31-4150-9947-dc59f998fc01'
-
-class SourceControlType(object):
-    Git = 'Git'
-    Tfvc = 'Tfvc'
-
 class WorkitemType(object):
     def __init__(self):
         self.id = None

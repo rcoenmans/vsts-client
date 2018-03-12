@@ -87,7 +87,6 @@ class VstsClient(object):
     
     # POST {account}.visualstudio.com/DefaultCollection/_apis/projects?api-version=2.0-preview
     def create_project(self, name, description, source_control_type='Git', template_type_id='6b724908-ef14-45cf-84f8-768b5384da45'):
-        # Create the payload
         payload = {
             'name': name,
             'description': description,
@@ -100,8 +99,6 @@ class VstsClient(object):
                 }
             }
         }
-
-        # Create the HTTP Request
         request = HTTPRequest()
         request.method  = 'POST'
         request.path    = '/DefaultCollection/_apis/projects'

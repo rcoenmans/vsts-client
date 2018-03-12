@@ -48,7 +48,7 @@ project = client.get_project('Self-flying car')
 Create a team project in a Visual Studio Team Services account using the given `SourceControlType` and `ProcessTemplate`.
 ```python
 from vstsclient.vstsclient import VstsClient
-from vstsclient.model import (
+from vstsclient.constants import (
     ProcessTemplate,
     SourceControlType
 )
@@ -57,7 +57,7 @@ client  = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
 project = client.create_project(
     'Self-flying car',                      # Project name 
     'A project for our self-flying car',    # Project description
-    SourceControlType.Git,                  # Source control type: Git or Tfvc
-    ProcessTemplate.Agile)                  # Process template: Agile, Scrum or CMMI
+    SourceControlType.GIT,                  # Source control type: Git or Tfvc
+    ProcessTemplate.AGILE)                  # Process template: Agile, Scrum or CMMI
 ```
 ##
