@@ -13,16 +13,16 @@ In order to connect to VSTS, you need to obtain a [personal access token](https:
 from vstsclient.vstsclient import VstsClient
 
 # Initialize the VSTS client using the VSTS instance and personal access token
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 ```
 ### What about TFS?
 To connect to an on-premises TFS environment you supply the server name and port number (default is 8080).
 ```python
-client = VstsClient('tfs.contoso.com:8080', '<personalaccesstoken>')
+client = VstsClient('tfs.contoso.com:8080', '{personalaccesstoken}')
 ```
 ### Connecting from behind a proxy
 ```python
-client.set_proxy('proxy.contoso.com', 8080, '<username>', '<password>')
+client.set_proxy('proxy.contoso.com', 8080, '{username}', '{password}')
 ```
 
 ## Team Projects
@@ -32,7 +32,7 @@ Get all team projects in the project collection that the authenticated user has 
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import StateFilter
 
-client   = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client   = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 
 # StateFilter options are WellFormed (default), New, Deleting, CreatePending and All
 projects = client.get_projects(StateFilter.WELL_FORMED) 
@@ -41,7 +41,7 @@ projects = client.get_projects(StateFilter.WELL_FORMED)
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client  = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client  = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 project = client.get_project('Self-flying car')
 ```
 ### Create a team project
@@ -53,7 +53,7 @@ from vstsclient.constants import (
     SourceControlType
 )
 
-client  = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client  = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 project = client.create_project(
     'Self-flying car',                      # Project name 
     'A project for our self-flying car',    # Project description
@@ -68,14 +68,14 @@ All work items have an area and an iteration field. The values that these fields
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 areas  = client.get_areas('Self-flying car')
 ```
 #### Get the area tree with 2 levels of children
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 areas  = client.get_areas('Self-flying car', 2)
 
 for area in areas.children:
@@ -85,14 +85,14 @@ for area in areas.children:
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 iterations = client.get_iterations('Self-flying car')
 ```
 #### Get the iteration tree with 2 levels of children
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 iterations = client.get_iterations(
     'Self-flying car',                  # Team project name 
     2)                                  # Hierarchy depth
@@ -105,14 +105,14 @@ for iteration in iterations.children:
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 area = client.get_area('Self-flying car', 'Engine')
 ```
 #### Get an iteration
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 iteration = client.get_iteration('Self-flying car', 'Sprint 1')
 ```
 ### Create an area and iteration
@@ -120,7 +120,7 @@ iteration = client.get_iteration('Self-flying car', 'Sprint 1')
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 area = client.create_area(
     'Self-flying car',          # Team project name
     'Engine')                   # Area name
@@ -132,7 +132,7 @@ from vstsclient.vstsclient import VstsClient
 start_date  = datetime.datetime.utcnow()                # Sprint starts today
 finish_date = start_date + datetime.timedelta(days=21)  # Ends in 3 weeks
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 iteration = client.create_iteration(
     'Self-flying car',          # Team project name 
     'Sprint 1',                 # Iteration name
@@ -145,14 +145,14 @@ iteration = client.create_iteration(
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
-workitems = client.get_workitems_by_id('13,21,34')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
+workitems = client.get_workitems_by_id('1,2,3,5,8,13,21,34')
 ```
 ### Get a work item
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 workitem = client.get_workitem(13)
 ```
 ### Create a work item
@@ -160,7 +160,9 @@ When you create a work item, you can provide values for any of the work item fie
 ```python
 from vstsclient.vstsclient import VstsClient
 from vstsclient.models import JsonPatchDocument, JsonPatchOperation
-from vstsclient.constants import SystemFields
+from vstsclient.constants import SystemFields, MicrosoftFields
+
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 
 # Create a JsonPatchDocument and provide the values for the work item fields
 doc = JsonPatchDocument()
@@ -171,10 +173,10 @@ doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Buzz <buzz@contoso.
 doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'wing; left'))
 doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+# Create a new work item by specifying the project and work item type
 workitem = client.create_workitem(
-    'Self-flying car'           # Team project name
-    'User Story'                # Work item type (e.g. Epic, Feature, User Story etc.)
+    'Self-flying car',          # Team project name
+    'User Story',               # Work item type (e.g. Epic, Feature, User Story etc.)
     doc)                        # JsonPatchDocument with operations
 ```
 ### Update work items
@@ -183,23 +185,42 @@ from vstsclient.vstsclient import VstsClient
 from vstsclient.models import JsonPatchDocument, JsonPatchOperation
 from vstsclient.constants import SystemFields
 
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
+
 # Create a JsonPatchDocument and provide the values for the fields to update
 doc = JsonPatchDocument()
 doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
-workitem = client.update_workitem(
-    13                          # Work item id
-    doc)                        # JsonPatchDocument with operations
+# Update work item id 13
+workitem = client.update_workitem(13, doc)
 ``` 
+### Add a tag
+```python
+tags = ['Tag1', 'Tag2']
+client.add_tags(13, tags)
+```
+### Add a link
+```python
+from vstsclient.constants import LinkTypes
+
+feature = client.get_workitem(1)        # Get a feature
+userstory = client.get_workitem(2)      # Get a user story
+
+# Create a parent/child link between the feature and the userstory
+client.add_link(userstory.id, feature.id, LinkTypes.PARENT, 'Adding this user story to feature x')
+
+# Note that you can create the same link the other way around
+client.add_link(feature.id, userstory.id, LinkTypes.CHILD, 'Adding user story x to this feature')
+```
 
 ## Work item query language (WIQL)
 ### Run a query
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('contoso.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 
+# Specifying the team project is optional
 # Note that the query returns a list of work item ids
 query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'User Story A'"
 result = client.query(query, 'Self-flying car')

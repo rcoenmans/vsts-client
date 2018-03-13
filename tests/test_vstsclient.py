@@ -91,8 +91,6 @@ class VstsClientTest(unittest.TestCase):
         areas  = client.get_areas('Contoso', 2)
         self.assertIsNotNone(areas)
 
-        
-
     def test_get_workitems(self):
         client = VstsClient(self.instance, self.personal_access_token)
         workitems = client.get_workitems_by_id('1')
