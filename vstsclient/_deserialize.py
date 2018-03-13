@@ -60,7 +60,7 @@ def _parse_json_to_workitems(response):
     return workitems
 
 def _parse_json_to_workitem(response):
-    attrs = ['id', 'fields', 'url']
+    attrs = ['id', 'rev', 'fields', 'url']
     return _map_attrs_values(Workitem, attrs, response)
 
 def _parse_json_to_iteration(response):

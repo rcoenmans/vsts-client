@@ -60,6 +60,7 @@ class SystemFields(object):
 
 class MicrosoftFields(object):
     VALUE_AREA = '/fields/Microsoft.VSTS.Common.ValueArea'
+    PRIORITY   = '/fields/Microsoft.VSTS.Common.Priority'
 
 class State(object):
     ACTIVE   = 'Active'

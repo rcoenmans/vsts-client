@@ -40,6 +40,7 @@ class Project(object):
 class Workitem(object):
     def __init__(self):
         self.id = None
+        self.rev = 1
         self.url = None
         self.fields = None
 
