@@ -223,7 +223,7 @@ with open('./example.png', 'rb') as f:
     attachment = client.upload_attachment('example.png', f)
             
 # Link the attachment to the work item
-client.add_attachment(workitem.id, attachment.url, 'Linking attachment.txt to a work item')
+client.add_attachment(workitem.id, attachment.url, 'Linking example.png to a work item')
 ```
 ### Delete a work item
 ```python
@@ -233,10 +233,6 @@ client.delete_workitem(1)
 ## Work item query language (WIQL)
 ### Run a query
 ```python
-from vstsclient.vstsclient import VstsClient
-
-client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
-
 # Specifying the team project is optional
 # Note that the query returns a list of work item ids
 query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'User Story A'"
