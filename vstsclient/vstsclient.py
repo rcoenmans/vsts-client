@@ -213,18 +213,27 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_workitem)
 
     # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
-    def update_workitem(self, workitem_id, document: JsonPatchDocument):
+    def update_workitem(self, id: int, document: JsonPatchDocument):
         payload = []
         for operation in document:
             payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
 
         request = HTTPRequest()
         request.method  = 'PATCH'
-        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(workitem_id)
+        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(id)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json-patch+json'}
         return self._perform_request(request, _parse_json_to_workitem)
+
+    # DELETE {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
+    def delete_workitem(self, id: int):
+        request = HTTPRequest()
+        request.method  = 'DELETE'
+        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(id)
+        request.query   = 'api-version=1.0'
+        request.headers = {'content-type': 'application/json-patch+json'}
+        self._perform_request(request)
 
     def add_tags(self, workitem_id: int, tags: list):
         doc = JsonPatchDocument()
@@ -266,7 +275,7 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_attachment)
 
     # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
-    def add_attachment(self, workitem_id, attachment_url, comment):
+    def add_attachment(self, workitem_id: int, attachment_url, comment):
         doc = JsonPatchDocument()
         doc.add(
             JsonPatchOperation(

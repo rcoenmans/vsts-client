@@ -194,12 +194,12 @@ doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
 # Update work item id 13
 workitem = client.update_workitem(13, doc)
 ``` 
-### Add a tag
+#### Add a tag
 ```python
 tags = ['Tag1', 'Tag2']
 client.add_tags(13, tags)
 ```
-### Add a link
+#### Add a link
 ```python
 from vstsclient.constants import LinkTypes
 
@@ -211,6 +211,23 @@ client.add_link(userstory.id, feature.id, LinkTypes.PARENT, 'Adding this user st
 
 # Note that you can create the same link the other way around
 client.add_link(feature.id, userstory.id, LinkTypes.CHILD, 'Adding user story x to this feature')
+```
+#### Add an attachment
+To attach a file to a work item, upload the attachment to the attachment store using `upload_attachment`, then attach it to the work item.
+```python
+workitem   = client.get_workitem(1) 
+attachment = None
+
+# Upload the attachment to the attachment store
+with open('./example.png', 'rb') as f:
+    attachment = client.upload_attachment('example.png', f)
+            
+# Link the attachment to the work item
+client.add_attachment(workitem.id, attachment.url, 'Linking attachment.txt to a work item')
+```
+### Delete a work item
+```python
+client.delete_workitem(1)
 ```
 
 ## Work item query language (WIQL)
