@@ -40,6 +40,7 @@ from vstsclient.models import (
     JsonPatchDocument,
     JsonPatchOperation
 )
+from vstsclient._http import HTTPError
 
 class VstsClientTest(unittest.TestCase):
     def setUp(self):
@@ -188,6 +189,13 @@ class VstsClientTest(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.rows)
         self.assertGreater(len(result.rows), 0)
+
+    def test_http_error(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        try:
+            client.get_workitem('invalid_id')
+        except HTTPError as e:
+            self.assertIsNotNone(e)
 
 if __name__ == '__main__':
     unittest.main()

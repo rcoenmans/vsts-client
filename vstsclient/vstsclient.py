@@ -24,7 +24,7 @@
 import requests
 import json
 
-from ._http import HTTPRequest
+from ._http import HTTPRequest, HTTPError
 from ._http.httpclient import _HTTPClient
 from ._auth import _get_auth_header
 
@@ -304,9 +304,13 @@ class VstsClient(object):
         request.headers['Authorization'] = _get_auth_header(self.personal_access_token)
 
         response = self._http_client.perform_request(request)
+        
+        if response.status >= 300:
+            raise HTTPError(response.status, response.message, response.headers, response.body)
+
         result = json.loads(response.body.decode('UTF-8'))
 
         if parser:
             return parser(result)
-        else:
-            return result
+        
+        return result

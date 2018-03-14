@@ -116,10 +116,16 @@ def _parse_json_to_attachment(response):
     attachment.url = response['url']
     return attachment
 
+def _get_attr_value(attr, values, default=None):
+    if attr in values:
+        return values[attr]
+    else:
+        return default
+
 def _map_attrs_values(result_class, attrs, values):
     result = result_class()
     for attr in attrs:
         if attr in values:
-            setattr(result, attr, values[attr])
+            setattr(result, attr, _get_attr_value(attr, values))
 
     return result

@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 if __name__ == "__main__":
     setup(
         name='vsts-client',
-        version='0.0.6',
+        version='0.0.7',
         description='VSTS client library',
         long_description='This project provides a client library for working with VSTS/TFS projects, areas/iterations, sprints, workitems and tasks.',
         license='MIT License',
