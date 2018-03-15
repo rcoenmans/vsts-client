@@ -92,9 +92,14 @@ class VstsClientTest(unittest.TestCase):
         areas  = client.get_areas('Contoso', 2)
         self.assertIsNotNone(areas)
 
+    def test_create_area(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        area   = client.create_area('Contoso', 'Area 2')
+        self.assertIsNotNone(area) 
+
     def test_get_workitems(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        workitems = client.get_workitems_by_id('1')
+        workitems = client.get_workitems_by_id('62')
         self.assertIsNotNone(workitems)
         self.assertGreater(len(workitems), 0)
         self.assertIsInstance(workitems[0], Workitem)

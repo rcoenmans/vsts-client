@@ -59,8 +59,12 @@ class SystemFields(object):
     HISTORY        = '/fields/System.History'
 
 class MicrosoftFields(object):
-    VALUE_AREA = '/fields/Microsoft.VSTS.Common.ValueArea'
-    PRIORITY   = '/fields/Microsoft.VSTS.Common.Priority'
+    VALUE_AREA   = '/fields/Microsoft.VSTS.Common.ValueArea'
+    PRIORITY     = '/fields/Microsoft.VSTS.Common.Priority'
+
+    REPRO_STEPS  = '/fields/Microsoft.VSTS.TCM.ReproSteps'
+
+    STORY_POINTS = '/fields/Microsoft.VSTS.Scheduling.StoryPoints'
 
 class State(object):
     ACTIVE   = 'Active'
