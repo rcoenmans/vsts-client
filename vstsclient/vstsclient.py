@@ -199,7 +199,7 @@ class VstsClient(object):
         return self._perform_request(request, _parse_json_to_workitem)
 
     # PATCH {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/workitems/${workItemTypeName}?api-version=1.0
-    def create_workitem(self, project_name, workitem_type_name, document: JsonPatchDocument):
+    def create_workitem(self, project_name, workitem_type_name, document: JsonPatchDocument, bypass_rules=False):
         payload = []
         for operation in document:
             payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
@@ -207,13 +207,13 @@ class VstsClient(object):
         request = HTTPRequest()
         request.method  = 'PATCH'
         request.path    = '/DefaultCollection/{}/_apis/wit/workitems/${}'.format(project_name, workitem_type_name)
-        request.query   = 'api-version=1.0'
+        request.query   = 'api-version=1.0&bypassRules={}'.format(bypass_rules)
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json-patch+json'}
         return self._perform_request(request, _parse_json_to_workitem)
 
     # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
-    def update_workitem(self, id: int, document: JsonPatchDocument):
+    def update_workitem(self, id: int, document: JsonPatchDocument, bypass_rules=False):
         payload = []
         for operation in document:
             payload.append({ 'op': operation.op, 'path': operation.path, 'value': operation.value })
@@ -221,7 +221,7 @@ class VstsClient(object):
         request = HTTPRequest()
         request.method  = 'PATCH'
         request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(id)
-        request.query   = 'api-version=1.0'
+        request.query   = 'api-version=1.0&bypassRules={}'.format(bypass_rules)
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json-patch+json'}
         return self._perform_request(request, _parse_json_to_workitem)
