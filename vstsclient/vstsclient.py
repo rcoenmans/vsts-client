@@ -264,6 +264,23 @@ class VstsClient(object):
         )
         return self.update_workitem(from_workitem_id, doc)
 
+    # PATCH {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems/{workitem_id}?api-version=1.0
+    def add_hyperlink(self, workitem_id, url, comment=None):
+        doc = JsonPatchDocument()
+        doc.add(
+            JsonPatchOperation(
+                'add', 
+                '/relations/-', 
+                { 'rel': 'Hyperlink', 'url': url }
+            )
+        )
+
+        # Optionally add a comment
+        if comment is not None:
+            doc.add(JsonPatchOperation('add', '/fields/System.History', comment))
+        
+        return self.update_workitem(workitem_id, doc)
+
     # POST {account}.visualstudio.com/DefaultCollection/_apis/wit/attachments?api-version=1.0&filename={string}
     def upload_attachment(self, filename, data):
         request = HTTPRequest()
