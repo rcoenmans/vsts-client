@@ -23,6 +23,7 @@
 
 import unittest
 import datetime
+import random
 
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import (
@@ -63,7 +64,10 @@ class VstsClientTest(unittest.TestCase):
 
     def test_create_project(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.GIT, ProcessTemplate.AGILE)
+        project = client.get_project('Contoso')
+        if project is None:
+            project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.GIT, ProcessTemplate.AGILE)
+        
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
 
@@ -81,7 +85,7 @@ class VstsClientTest(unittest.TestCase):
     def test_create_iteration(self):
         client = VstsClient(self.instance, self.personal_access_token)
 
-        name = 'Sprint A'
+        name = 'Sprint {}'.format(random.randrange(99))
         start_date = datetime.datetime.utcnow()
         finish_date = start_date + datetime.timedelta(days=21)
         iteration = client.create_iteration('Contoso', name, start_date, finish_date)
@@ -94,7 +98,7 @@ class VstsClientTest(unittest.TestCase):
 
     def test_create_area(self):
         client = VstsClient(self.instance, self.personal_access_token)
-        area   = client.create_area('Contoso', 'Area 2')
+        area   = client.create_area('Contoso', 'Area {}'.format(random.randrange(99)))
         self.assertIsNotNone(area) 
 
     def test_get_workitems(self):
@@ -108,7 +112,7 @@ class VstsClientTest(unittest.TestCase):
         client = VstsClient(self.instance, self.personal_access_token)
 
         doc = JsonPatchDocument()
-        doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Test Story D'))
+        doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Test Story'))
         doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'This is a description'))
         doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
         doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Robbie Coenmans <robbie.coenmans@hotmail.com>'))
@@ -150,7 +154,7 @@ class VstsClientTest(unittest.TestCase):
         client = VstsClient(self.instance, self.personal_access_token)
 
         # Get a User Story
-        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'Test Story'"
         result = client.query(query, 'Contoso')
         userstory_id = result.rows[0]['id']
 
@@ -178,7 +182,7 @@ class VstsClientTest(unittest.TestCase):
             attachment = client.upload_attachment('vsts_settings.txt', f)
             
         # Find a workitem
-        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'Test Story'"
         result = client.query(query, 'Contoso')
         id     = result.rows[0]['id']
         
@@ -189,7 +193,7 @@ class VstsClientTest(unittest.TestCase):
     def test_query(self):
         client = VstsClient(self.instance, self.personal_access_token)
 
-        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'This is just a test story'"
+        query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'Test Story'"
         result = client.query(query, 'Contoso')
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.rows)
