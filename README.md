@@ -168,10 +168,7 @@ client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
 doc = JsonPatchDocument()
 doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Left-side wing'))
 doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Create a left-side wing for our self-flying car.'))
-doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Woody <woody@contoso.com>'))
-doc.add(JsonPatchOperation('add', SystemFields.ASSIGNED_TO, 'Buzz <buzz@contoso.com>'))
 doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'wing; left'))
-doc.add(JsonPatchOperation('add', MicrosoftFields.VALUE_AREA, 'Architectural'))
 
 # Create a new work item by specifying the project and work item type
 workitem = client.create_workitem(
@@ -193,6 +190,20 @@ doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
 
 # Update work item id 13
 workitem = client.update_workitem(13, doc)
+``` 
+### Change work item type
+NOTE: Only supported on VSTS (not on TFS).
+```python
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
+client.change_workitem_type(13, 'Task')
+```
+### Move a work item
+NOTE: Only supported on VSTS (not on TFS).
+```python
+client = VstsClient('{account}.visualstudio.com', '{personalaccesstoken}')
+
+# To move a work item, provide the Team Project, Area path and Iteration path to move to
+client.move_workitem(13, 'Contoso', 'Contoso', 'Sprint 1')
 ``` 
 #### Add a tag
 ```python
@@ -229,6 +240,30 @@ client.add_attachment(workitem.id, attachment.url, 'Linking example.png to a wor
 ```python
 client.delete_workitem(1)
 ```
+### Update work items bypassing rules
+Bypassing the rules engine allows you to modify work item fields without any restrictions, for example you can assign a work item to a user no longer in the organization.
+
+To modify the `System.CreatedBy`, `System.CreatedDate`, `System.ChangedBy`, or `System.ChangedDate` fields, you must be a member of the **Project Collection Service Acccounts** group.
+```python
+doc = JsonPatchDocument()
+doc.add(JsonPatchOperation('add', SystemFields.CHANGED_BY, 'Woody <woody@contoso.com>'))
+doc.add(JsonPatchOperation('add', SystemFields.CHANGED_DATE, '01-01-2018'))
+
+# Set the bypass_rules parameter to True
+client.update_workitem(13, doc, bypass_rules=True)
+``` 
+NOTE: `System.CreatedBy` and `System.CreatedDate` can only be modified using bypass rules on work item creation, i.e. the first revision of a work item. 
+```python
+# Set the Created By and Created Date fields
+doc = JsonPatchDocument()
+doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Left-side wing'))
+doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Create a left-side wing for our self-flying car.'))
+doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Woody <woody@contoso.com>'))
+doc.add(JsonPatchOperation('add', SystemFields.CREATED_DATE, '01-01-2018'))
+
+# Set the bypass_rules parameter to True
+client.create_workitem('Contoso', 'User Story', doc, bypass_rules=True)
+``` 
 
 ## Work item query language (WIQL)
 ### Run a query

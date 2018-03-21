@@ -123,6 +123,20 @@ class VstsClient(object):
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitemtypes)
 
+    def change_workitem_type(self, workitem_id: int, workitem_type_name):
+        _validate_not_none('workitem_id', workitem_id)
+        _validate_not_none('workitem_type_name', workitem_type_name)
+
+        doc = JsonPatchDocument()
+        doc.add(
+            JsonPatchOperation(
+                'add', 
+                '/fields/System.WorkItemType', 
+                '{}'.format(workitem_type_name)
+            )
+        )
+        return self.update_workitem(workitem_id, doc)
+
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas?$depth={depth}&api-version=1.0
     def get_areas(self, project_name, depth=1):
         _validate_not_none('project_name', project_name)
@@ -159,6 +173,18 @@ class VstsClient(object):
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_area)
+
+    # DELETE {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/areas/{area}?$reclassifyId={id}&api-version=1.0
+    def delete_area(self, project_name, area_path, reclassify_id=''):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('area_path', area_path)
+
+        request = HTTPRequest()
+        request.method  = 'DELETE'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas/{}'.format(project_name, area_path)
+        request.query   = 'api-version=1.0&$reclassifyId={}'.format(reclassify_id)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
 
     # GET {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations?$depth={depth}&api-version=1.0
     def get_iterations(self, project_name, depth=1):
@@ -204,6 +230,30 @@ class VstsClient(object):
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_iteration)
+
+    # DELETE {account}.visualstudio.com/DefaultCollection/{project}/_apis/wit/classificationNodes/iterations/{iteration}?$reclassifyId={id}&api-version=1.0
+    def delete_iteration(self, project_name, iteration_path, reclassify_id=''):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('iteration_path', iteration_path)
+
+        request = HTTPRequest()
+        request.method  = 'DELETE'
+        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, iteration_path)
+        request.query   = 'api-version=1.0&$reclassifyId={}'.format(reclassify_id)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+
+    def move_workitem(self, workitem_id, project_name, area_path, iteration_path):
+        _validate_not_none('workitem_id', workitem_id)
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('area_path', area_path)
+        _validate_not_none('iteration_path', iteration_path)
+
+        doc = JsonPatchDocument()
+        doc.add(JsonPatchOperation('add', '/fields/System.TeamProject', '{}'.format(project_name)))
+        doc.add(JsonPatchOperation('add', '/fields/System.AreaPath', '{}'.format(area_path)))
+        doc.add(JsonPatchOperation('add', '/fields/System.IterationPath', '{}'.format(iteration_path)))
+        return self.update_workitem(workitem_id, doc)
 
     # GET {account}.visualstudio.com/DefaultCollection/_apis/wit/workitems?ids=297,299,300&api-version=1.0
     def get_workitems_by_id(self, workitem_ids):
