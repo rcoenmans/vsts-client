@@ -1,5 +1,7 @@
 # VSTS/TFS Client
-This project provides a client library, written in Python, for working with VSTS/TFS projects, areas/iterations, sprints, work items and tasks.
+A client library for working with VSTS/TFS projects, areas/iterations, sprints, work items and tasks written in Python.
+
+Please feel free to send me a pull request if you've fixed a bug or added a feature.
 
 ## Installation
 ```
