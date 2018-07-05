@@ -64,7 +64,9 @@ class MicrosoftFields(object):
 
     REPRO_STEPS  = '/fields/Microsoft.VSTS.TCM.ReproSteps'
 
-    STORY_POINTS = '/fields/Microsoft.VSTS.Scheduling.StoryPoints'
+    STORY_POINTS      = '/fields/Microsoft.VSTS.Scheduling.StoryPoints'
+    ORIGINAL_ESTIMATE = '/fields/Microsoft.VSTS.Scheduling.OriginalEstimate'
+    REMAINING_WORK    = '/fields/Microsoft.VSTS.Scheduling.RemainingWork' 
 
 class State(object):
     ACTIVE   = 'Active'
