@@ -1,4 +1,4 @@
-# Azure DevOps (VSTS)/TFS Client
+# Azure DevOps (VSTS) & TFS Client
 A client library for working with Azure DevOps (formerly VSTS) and TFS projects, areas/iterations, sprints, work items and tasks written in Python.
 
 Please feel free to send me a pull request if you've fixed a bug or added a feature.
