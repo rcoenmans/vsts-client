@@ -1,5 +1,5 @@
-# VSTS/TFS Client
-A client library for working with VSTS/TFS projects, areas/iterations, sprints, work items and tasks written in Python.
+# Azure DevOps (VSTS)/TFS Client
+A client library for working with Azure DevOps (formerly VSTS) and TFS projects, areas/iterations, sprints, work items and tasks written in Python.
 
 Please feel free to send me a pull request if you've fixed a bug or added a feature.
 
@@ -8,8 +8,8 @@ Please feel free to send me a pull request if you've fixed a bug or added a feat
 pip install vsts-client
 ```
 
-## Connecting to VSTS
-In order to connect to VSTS, you need to obtain a [personal access token](https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/pats).  
+## Connecting to Azure DevOps
+In order to connect to Azure DevOps, you need to obtain a [personal access token](https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/pats).  
 ```python
 # Import the VstsClient module
 from vstsclient.vstsclient import VstsClient
@@ -47,7 +47,7 @@ client  = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
 project = client.get_project('Self-flying car')
 ```
 ### Create a team project
-Create a team project in a Visual Studio Team Services account using the given `SourceControlType` and `ProcessTemplate`.
+Create a team project in a Azure DevOps account using the given `SourceControlType` and `ProcessTemplate`.
 ```python
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import (
@@ -194,13 +194,13 @@ doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
 workitem = client.update_workitem(13, doc)
 ``` 
 #### Change work item type
-NOTE: Only supported on VSTS (not on TFS).
+NOTE: Only supported on Azure DevOps (not on TFS).
 ```python
 client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
 client.change_workitem_type(13, 'Task')
 ```
 #### Move a work item
-NOTE: Only supported on VSTS (not on TFS).
+NOTE: Only supported on Azure DevOps (not on TFS).
 ```python
 client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
 
@@ -241,7 +241,7 @@ client.add_attachment(workitem.id, attachment.url, 'Linking example.png to a wor
 #### Update work items bypassing rules
 Bypassing the rules engine allows you to modify work item fields without any restrictions, for example you can assign a work item to a user no longer in the organization.
 
-To modify the `System.CreatedBy`, `System.CreatedDate`, `System.ChangedBy`, or `System.ChangedDate` fields, you must be a member of the **Project Collection Service Acccounts** group.
+To modify the `System.CreatedBy`, `System.CreatedDate`, `System.ChangedBy`, or `System.ChangedDate` fields, you must be a member of the Project Collection Service Acccounts group.
 ```python
 doc = JsonPatchDocument()
 doc.add(JsonPatchOperation('add', SystemFields.CHANGED_BY, 'Woody <woody@contoso.com>'))
