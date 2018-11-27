@@ -46,7 +46,7 @@ from ._error import _validate_not_none
 from .models import JsonPatchDocument, JsonPatchOperation
 
 class VstsClient(object):
-    def __init__(self, instance, personal_access_token):
+    def __init__(self, instance, personal_access_token, collection='DefaultCollection'):
         _validate_not_none('instance', instance)
         _validate_not_none('personal_access_token', personal_access_token)
 
@@ -62,6 +62,8 @@ class VstsClient(object):
             session  = requests.Session(),
             timeout  = 30,
         )
+        
+        self.collection = collection
 
     def set_proxy(self, host, port, user, password):
         _validate_not_none('host', host)
@@ -71,7 +73,7 @@ class VstsClient(object):
     def get_projects(self, state='WellFormed', top=100, skip=0):
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/_apis/projects'
+        request.path    = '/{}/_apis/projects'.format(self.collection)
         request.query   = 'api-version=1.0&stateFilter={}&$top={}&$skip={}'.format(state, top, skip)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_projects)
@@ -82,7 +84,7 @@ class VstsClient(object):
         
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/_apis/projects/{}'.format(project_name)
+        request.path    = '/{}/_apis/projects/{}'.format(self.collection, project_name)
         request.query   = 'includeCapabilities=true&api-version=1.0'
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_project)
@@ -106,7 +108,7 @@ class VstsClient(object):
         }
         request = HTTPRequest()
         request.method  = 'POST'
-        request.path    = '/DefaultCollection/_apis/projects'
+        request.path    = '/{}/_apis/projects'.format(self.collection)
         request.query   = 'api-version=2.0-preview'
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json'}
@@ -118,7 +120,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/{}/_apis/wit/workItemTypes'.format(project_name)
+        request.path    = '/{}/{}/_apis/wit/workItemTypes'.format(self.collection, project_name)
         request.query   = 'api-version=1.0'
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitemtypes)
@@ -143,7 +145,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/areas'.format(self.collection, project_name)
         request.query   = '$depth={}&api-version=1.0'.format(depth)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_area)
@@ -155,7 +157,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas/{}'.format(project_name, name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/areas/{}'.format(self.collection, project_name, name)
         request.query   = 'api-version=1.0'
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_area)
@@ -168,7 +170,7 @@ class VstsClient(object):
         payload = { 'name': name }
         request = HTTPRequest()
         request.method  = 'POST'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas'.format(project_name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/areas'.format(self.collection, project_name)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json'}
@@ -181,7 +183,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'DELETE'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/areas/{}'.format(project_name, area_path)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/areas/{}'.format(self.collection, project_name, area_path)
         request.query   = 'api-version=1.0&$reclassifyId={}'.format(reclassify_id)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request)
@@ -192,7 +194,7 @@ class VstsClient(object):
         
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/iterations'.format(self.collection, project_name)
         request.query   = '$depth={}&api-version=1.0'.format(depth)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_iteration)
@@ -204,7 +206,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/iterations/{}'.format(self.collection, project_name, name)
         request.query   = 'api-version=1.0'
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_iteration)
@@ -225,7 +227,7 @@ class VstsClient(object):
         }
         request = HTTPRequest()
         request.method  = 'POST'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations'.format(project_name)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/iterations'.format(self.collection, project_name)
         request.query   = 'api-version=1.0'
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json'}
@@ -238,7 +240,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'DELETE'
-        request.path    = '/DefaultCollection/{}/_apis/wit/classificationNodes/iterations/{}'.format(project_name, iteration_path)
+        request.path    = '/{}/{}/_apis/wit/classificationNodes/iterations/{}'.format(self.collection, project_name, iteration_path)
         request.query   = 'api-version=1.0&$reclassifyId={}'.format(reclassify_id)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request)
@@ -261,7 +263,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/_apis/wit/workitems'
+        request.path    = '/{}/_apis/wit/workitems'.format(self.collection)
         request.query   = 'ids={}&api-version=1.0'.format(workitem_ids)
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitems)
@@ -272,7 +274,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'GET'
-        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(workitem_id)
+        request.path    = '/{}/_apis/wit/workitems/{}'.format(self.collection, workitem_id)
         request.query   = 'api-version=1.0&$expand=all'
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_workitem)
@@ -289,7 +291,7 @@ class VstsClient(object):
         
         request = HTTPRequest()
         request.method  = 'PATCH'
-        request.path    = '/DefaultCollection/{}/_apis/wit/workitems/${}'.format(project_name, workitem_type_name)
+        request.path    = '/{}/{}/_apis/wit/workitems/${}'.format(self.collection, project_name, workitem_type_name)
         request.query   = 'api-version=1.0&bypassRules={}'.format(bypass_rules)
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json-patch+json'}
@@ -306,7 +308,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'PATCH'
-        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(id)
+        request.path    = '/{}/_apis/wit/workitems/{}'.format(self.collection, id)
         request.query   = 'api-version=1.0&bypassRules={}'.format(bypass_rules)
         request.body    = json.dumps(payload)
         request.headers = {'content-type': 'application/json-patch+json'}
@@ -318,7 +320,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'DELETE'
-        request.path    = '/DefaultCollection/_apis/wit/workitems/{}'.format(id)
+        request.path    = '/{}/_apis/wit/workitems/{}'.format(self.collection, id)
         request.query   = 'api-version=1.0'
         request.headers = {'content-type': 'application/json-patch+json'}
         self._perform_request(request)
@@ -387,7 +389,7 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'POST'
-        request.path    = '/DefaultCollection/_apis/wit/attachments'
+        request.path    = '/{}/_apis/wit/attachments'.format(self.collection)
         request.query   = 'api-version=1.0&filename={}'.format(filename)
         request.headers = {'content-type': 'application/octet-stream'}
         request.body    = data
@@ -421,13 +423,13 @@ class VstsClient(object):
 
         request = HTTPRequest()
         request.method  = 'POST'
-        request.path    = '/DefaultCollection/_apis/wit/wiql'
+        request.path    = '/{}/_apis/wit/wiql'.format(self.collection)
         request.query   = 'api-version=1.0'
         request.headers = { 'Content-Type': 'application/json' }
         request.body    = json.dumps({ 'query': query })
 
         if project_name is not None:
-            request.path = '/DefaultCollection/{}/_apis/wit/wiql'.format(project_name)
+            request.path = '/{}/{}/_apis/wit/wiql'.format(self.collection, project_name)
 
         return self._perform_request(request, _parse_json_to_query_result)
 
@@ -436,7 +438,7 @@ class VstsClient(object):
         request.host = self.instance
         request.headers['Accept'] = 'application/json'
         request.headers['Authorization'] = _get_auth_header(self.personal_access_token)
-
+        
         response = self._http_client.perform_request(request)
         
         if response.status >= 300:
