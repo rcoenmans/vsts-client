@@ -17,7 +17,7 @@ from vstsclient.vstsclient import VstsClient
 # Initialize the VSTS client using the Azure DevOps url and personal access token
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 ```
-Or using the 'old' url.
+Or you can still use visualstudio.com. 
 ```python
 client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
 ```
