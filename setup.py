@@ -29,15 +29,15 @@ from setuptools import setup, find_packages
 if __name__ == "__main__":
     setup(
         name='vsts-client',
-        version='0.1.0',
-        description='VSTS client library',
-        long_description='A Python client library for VSTS/TFS.',
+        version='1.1.0',
+        description='Azure DevOps client library',
+        long_description='A Python client library for Azure DevOps/TFS.',
         license='MIT License',
         author='Robbie Coenmans',
         author_email='robbie.coenmans@outlook.com',
         url='https://github.com/rcoenmans/vsts-client',
         classifiers=[
-            'Development Status :: 3 - Alpha',
+            'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
 
             'Programming Language :: Python :: 3',

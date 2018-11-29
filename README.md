@@ -14,13 +14,21 @@ In order to connect to Azure DevOps, you need to obtain a [personal access token
 # Import the VstsClient module
 from vstsclient.vstsclient import VstsClient
 
-# Initialize the VSTS client using the VSTS instance and personal access token
+# Initialize the VSTS client using the Azure DevOps url and personal access token
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+```
+Or using the 'old' url.
+```python
 client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
 ```
 ### What about TFS?
 To connect to an on-premises TFS environment you supply the server name and port number (default is 8080).
 ```python
 client = VstsClient('tfs.contoso.com:8080', '<personalaccesstoken>')
+```
+The VSTS client will pick the `DefaultCollection` by default. You can specify a different collection using the optional `collection` parameter.
+```python
+client = VstsClient('tfs.contoso.com:8080', '<personalaccesstoken>', '<your collection>')
 ```
 ### Connecting from behind a proxy
 ```python
@@ -34,7 +42,7 @@ Get all team projects in the project collection that the authenticated user has 
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import StateFilter
 
-client   = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client   = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # StateFilter options are WellFormed (default), New, Deleting, CreatePending and All
 projects = client.get_projects(StateFilter.WELL_FORMED) 
@@ -43,7 +51,7 @@ projects = client.get_projects(StateFilter.WELL_FORMED)
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client  = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client  = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 project = client.get_project('Self-flying car')
 ```
 ### Create a team project
@@ -55,7 +63,7 @@ from vstsclient.constants import (
     SourceControlType
 )
 
-client  = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client  = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 project = client.create_project(
     'Self-flying car',                      # Project name 
     'A project for our self-flying car',    # Project description
@@ -70,14 +78,14 @@ All work items have an area and an iteration field. The values that these fields
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 areas  = client.get_areas('Self-flying car')
 ```
 #### Get the area tree with 2 levels of children
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 areas  = client.get_areas('Self-flying car', 2)
 
 for area in areas.children:
@@ -87,14 +95,14 @@ for area in areas.children:
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iterations = client.get_iterations('Self-flying car')
 ```
 #### Get the iteration tree with 2 levels of children
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iterations = client.get_iterations(
     'Self-flying car',                  # Team project name 
     2)                                  # Hierarchy depth
@@ -107,14 +115,14 @@ for iteration in iterations.children:
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 area = client.get_area('Self-flying car', 'Engine')
 ```
 #### Get an iteration
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iteration = client.get_iteration('Self-flying car', 'Sprint 1')
 ```
 ### Create an area and iteration
@@ -122,7 +130,7 @@ iteration = client.get_iteration('Self-flying car', 'Sprint 1')
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 area = client.create_area(
     'Self-flying car',          # Team project name
     'Engine')                   # Area name
@@ -134,7 +142,7 @@ from vstsclient.vstsclient import VstsClient
 start_date  = datetime.datetime.utcnow()                # Sprint starts today
 finish_date = start_date + datetime.timedelta(days=21)  # Ends in 3 weeks
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iteration = client.create_iteration(
     'Self-flying car',          # Team project name 
     'Sprint 1',                 # Iteration name
@@ -147,14 +155,14 @@ iteration = client.create_iteration(
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 workitems = client.get_workitems_by_id('1,2,3,5,8,13,21,34')
 ```
 ### Get a work item
 ```python
 from vstsclient.vstsclient import VstsClient
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 workitem = client.get_workitem(13)
 ```
 ### Create a work item
@@ -164,7 +172,7 @@ from vstsclient.vstsclient import VstsClient
 from vstsclient.models import JsonPatchDocument, JsonPatchOperation
 from vstsclient.constants import SystemFields, MicrosoftFields
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # Create a JsonPatchDocument and provide the values for the work item fields
 doc = JsonPatchDocument()
@@ -184,7 +192,7 @@ from vstsclient.vstsclient import VstsClient
 from vstsclient.models import JsonPatchDocument, JsonPatchOperation
 from vstsclient.constants import SystemFields
 
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # Create a JsonPatchDocument and provide the values for the fields to update
 doc = JsonPatchDocument()
@@ -196,13 +204,13 @@ workitem = client.update_workitem(13, doc)
 #### Change work item type
 NOTE: Only supported on Azure DevOps (not on TFS).
 ```python
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 client.change_workitem_type(13, 'Task')
 ```
 #### Move a work item
 NOTE: Only supported on Azure DevOps (not on TFS).
 ```python
-client = VstsClient('<account>.visualstudio.com', '<personalaccesstoken>')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # To move a work item, provide the Team Project, Area path and Iteration path to move to
 client.move_workitem(13, 'Contoso', 'Contoso', 'Sprint 1')
