@@ -35,7 +35,6 @@ from vstsclient.constants import (
 )
 from vstsclient.models import (
     Project,
-    Iteration,
     Workitem,
     WorkitemType,
     JsonPatchDocument,
@@ -71,42 +70,17 @@ class VstsClientTest(unittest.TestCase):
         self.assertIsNotNone(project)
         self.assertIsInstance(project, Project)
 
-    def test_get_iterations(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        iters  = client.get_iterations('Contoso', 2)
-        self.assertIsNotNone(iters)
-
-    def test_get_iteration(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        iteration = client.get_iteration('Contoso', 'Sprint A')
-        self.assertIsNotNone(iteration)       
-        self.assertIsInstance(iteration, Iteration) 
-
-    def test_create_iteration(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-
-        name = 'Sprint {}'.format(random.randrange(99))
-        start_date = datetime.datetime.utcnow()
-        finish_date = start_date + datetime.timedelta(days=21)
-        iteration = client.create_iteration('Contoso', name, start_date, finish_date)
-        self.assertIsNotNone(iteration)
-
-    def test_get_areas(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        areas  = client.get_areas('Contoso', 2)
-        self.assertIsNotNone(areas)
-
-    def test_create_area(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        area   = client.create_area('Contoso', 'Area {}'.format(random.randrange(99)))
-        self.assertIsNotNone(area) 
-
     def test_get_workitems(self):
         client = VstsClient(self.instance, self.personal_access_token)
         workitems = client.get_workitems_by_id('62')
         self.assertIsNotNone(workitems)
         self.assertGreater(len(workitems), 0)
         self.assertIsInstance(workitems[0], Workitem)
+
+    def test_get_workitem_types(self):
+        client = VstsClient(self.instance, self.personal_access_token)
+        types = client.get_workitem_types('Contoso')
+        self.assertIsNotNone(types)
 
     def test_create_user_story(self):
         client = VstsClient(self.instance, self.personal_access_token)

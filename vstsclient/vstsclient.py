@@ -23,6 +23,7 @@
 
 import requests
 import json
+import logging
 
 from ._http import HTTPRequest, HTTPError
 from ._http.httpclient import _HTTPClient
@@ -37,7 +38,8 @@ from ._deserialize import (
     _parse_json_to_iteration,
     _parse_json_to_area,
     _parse_json_to_query_result,
-    _parse_json_to_attachment
+    _parse_json_to_attachment,
+    _parse_json_to_testplan
 )
 
 from ._conversion import _datetime_to_utc_string
@@ -58,6 +60,9 @@ class VstsClient(object):
             session  = requests.Session(),
             timeout  = 30,
         )
+
+        logging.basicConfig(level=logging.DEBUG, filename='vsts-client.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+
 
     def set_proxy(self, host, port, user, password):
         _validate_not_none('host', host)
@@ -411,6 +416,32 @@ class VstsClient(object):
         )
         return self.update_workitem(workitem_id, doc)
 
+    # POST {account}.visualstudio.com/{collection}/{project}/_apis/test/plans?api-version=1.0
+    def create_testplan(self, project_name, name, description='', start_date=None, end_date=None):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('name', name)
+
+        if start_date is None:
+            start_date = datetime.datetime.utcnow()
+
+        if end_date is None:    
+            end_date = start_date + datetime.timedelta(days=7)
+
+        payload = {
+            'name': name,
+            'description': description,
+            'startDate': _datetime_to_utc_string(start_date),
+            'endDate': _datetime_to_utc_string(end_date)
+        }
+        request = HTTPRequest()
+        request.method  = 'POST'
+        request.path    = '/{}/_apis/test/plans'.format(project_name)
+        request.query   = 'api-version=1.0'
+        request.body    = json.dumps(payload)
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request, _parse_json_to_testplan)
+
+
     # POST {account}.visualstudio.com/{collection}/[{project}/]_apis/wit/wiql?api-version=1.0
     def query(self, query, project_name=None):
         _validate_not_none('query', query)
@@ -433,8 +464,12 @@ class VstsClient(object):
         request.headers['Accept'] = 'application/json'
         request.headers['Authorization'] = _get_auth_header(self.personal_access_token)
         
+        logging.debug(request.body)
+
         response = self._http_client.perform_request(request)
         
+        logging.debug(response.body.decode('UTF-8'))
+
         if response.status >= 300:
             raise HTTPError(response.status, response.message, response.headers, response.body)
 

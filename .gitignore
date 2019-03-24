@@ -6,3 +6,4 @@ __pycache__
 
 vsts_settings.txt
 vsts_client.egg-info
+vsts-client.log

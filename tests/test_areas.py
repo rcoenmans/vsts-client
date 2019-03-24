@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # The MIT License (MIT)
-# Copyright (c) 2018 Robbie Coenmans
+# Copyright (c) 2019 Robbie Coenmans
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,36 @@
 # SOFTWARE.
 # -----------------------------------------------------------------------------
 
-from datetime import tzinfo, datetime
-from dateutil.parser import parse
+import unittest
 
-def _utc_string_to_datetime(value):
-    return parse(value)
+from vstsclient.vstsclient import VstsClient
 
-def _datetime_to_utc_string(value):
-    return value.strftime('%Y-%m-%dT%H:%M:%SZ')
+class AreasTest(unittest.TestCase):
+    def setUp(self):
+        file = open('./tests/vsts_settings.txt', 'r')
+        self.instance = file.readline().rstrip()
+        self.personal_access_token = file.readline().rstrip()
+        file.close()
+
+    def test_get_areas(self):
+        # Arrange
+        client = VstsClient(self.instance, self.personal_access_token)
+        
+        # Act
+        areas = client.get_areas('Contoso', 2)
+        
+        # Assert
+        self.assertIsNotNone(areas)
+
+    def test_create_area(self):
+        # Arrange
+        client = VstsClient(self.instance, self.personal_access_token)
+        
+        # Act
+        area = client.create_area('Contoso', 'Area {}'.format(random.randrange(99)))
+        
+        # Assert
+        self.assertIsNotNone(area)
+
+if __name__ == '__main__':
+    unittest.main()

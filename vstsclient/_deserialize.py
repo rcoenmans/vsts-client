@@ -28,7 +28,8 @@ from .models import (
     Workitem,
     WorkitemType,
     Attachment,
-    QueryResult
+    QueryResult,
+    TestPlan
 )
 
 from ._conversion import _utc_string_to_datetime
@@ -115,6 +116,13 @@ def _parse_json_to_attachment(response):
     attachment.id = response['id']
     attachment.url = response['url']
     return attachment
+
+def _parse_json_to_testplan(response):
+    attrs = ['id', 'name', 'description']
+    obj = _map_attrs_values(TestPlan, attrs, response)
+    obj.start_date = _utc_string_to_datetime(response['startDate'])
+    obj.end_date   = _utc_string_to_datetime(response['endDate'])
+    return obj
 
 def _get_attr_value(attr, values, default=None):
     if attr in values:

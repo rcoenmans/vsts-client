@@ -72,6 +72,14 @@ class Attachment(object):
         self.id = None
         self.url = None
 
+class TestPlan(object):
+    def __init__(self):
+        self.id = None
+        self.name = None
+        self.description = None
+        self.start_date = None
+        self.end_date = None
+
 class QueryResult(object):
     def __init__(self):
         self.query_type = 'three'
