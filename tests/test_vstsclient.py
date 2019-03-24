@@ -27,14 +27,11 @@ import random
 
 from vstsclient.vstsclient import VstsClient
 from vstsclient.constants import (
-    ProcessTemplate,
-    SourceControlType,
     SystemFields,
     MicrosoftFields,
     LinkTypes
 )
 from vstsclient.models import (
-    Project,
     Workitem,
     WorkitemType,
     JsonPatchDocument,
@@ -48,27 +45,6 @@ class VstsClientTest(unittest.TestCase):
         self.instance = file.readline().rstrip()
         self.personal_access_token = file.readline().rstrip()
         file.close()
-
-    def test_get_all_projects(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        projects = client.get_projects()
-        self.assertIsNotNone(projects)
-        self.assertGreater(len(projects), 0)
-
-    def test_get_project(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        project = client.get_project('Contoso')
-        self.assertIsNotNone(project)
-        self.assertIsInstance(project, Project)
-
-    def test_create_project(self):
-        client = VstsClient(self.instance, self.personal_access_token)
-        project = client.get_project('Contoso')
-        if project is None:
-            project = client.create_project('Contoso', 'A test project for Contoso', SourceControlType.GIT, ProcessTemplate.AGILE)
-        
-        self.assertIsNotNone(project)
-        self.assertIsInstance(project, Project)
 
     def test_get_workitems(self):
         client = VstsClient(self.instance, self.personal_access_token)
