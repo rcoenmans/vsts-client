@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # The MIT License (MIT)
-# Copyright (c) 2018 Robbie Coenmans
+# Copyright (c) 2020 Robbie Coenmans
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 if __name__ == "__main__":
     setup(
         name='vsts-client',
-        version='1.1.0',
+        version='1.2.0',
         description='Azure DevOps client library',
         long_description='A Python client library for Azure DevOps/TFS.',
         license='MIT License',
@@ -55,5 +55,5 @@ if __name__ == "__main__":
         ],
         zip_safe=False,
         packages=find_packages(),
-        install_requires=['requests'] + (['futures'] if sys.version_info < (3, 0) else [])
+        install_requires=['requests']
     )
