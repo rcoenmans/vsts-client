@@ -52,7 +52,7 @@ projects = client.get_projects(StateFilter.WELL_FORMED)
 from vstsclient.vstsclient import VstsClient
 
 client  = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-project = client.get_project('Self-flying car')
+project = client.get_project('Contoso')
 ```
 ### Create a team project
 Create a team project in a Azure DevOps account using the given `SourceControlType` and `ProcessTemplate`.
@@ -65,10 +65,10 @@ from vstsclient.constants import (
 
 client  = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 project = client.create_project(
-    'Self-flying car',                      # Project name 
-    'A project for our self-flying car',    # Project description
-    SourceControlType.GIT,                  # Source control type: Git or Tfvc
-    ProcessTemplate.AGILE)                  # Process template: Agile, Scrum or CMMI
+    'Contoso',                  # Project name 
+    'A project description',    # Project description
+    SourceControlType.GIT,      # Source control type: Git or Tfvc
+    ProcessTemplate.AGILE)      # Process template: Agile, Scrum or CMMI
 ```
 
 ## Areas and Iterations
@@ -79,14 +79,14 @@ All work items have an area and an iteration field. The values that these fields
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-areas  = client.get_areas('Self-flying car')
+areas  = client.get_areas('Contoso')
 ```
 #### Get the area tree with 2 levels of children
 ```python
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-areas  = client.get_areas('Self-flying car', 2)
+areas  = client.get_areas('Contoso', 2)
 
 for area in areas.children:
     print(area.name)
@@ -96,7 +96,7 @@ for area in areas.children:
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-iterations = client.get_iterations('Self-flying car')
+iterations = client.get_iterations('Contoso')
 ```
 #### Get the iteration tree with 2 levels of children
 ```python
@@ -104,8 +104,8 @@ from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iterations = client.get_iterations(
-    'Self-flying car',                  # Team project name 
-    2)                                  # Hierarchy depth
+    'Contoso',  # Team project name 
+    2)          # Hierarchy depth
 
 for iteration in iterations.children:
     print(iteration.name)
@@ -116,14 +116,14 @@ for iteration in iterations.children:
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-area = client.get_area('Self-flying car', 'Engine')
+area = client.get_area('Contoso', 'Area 1')
 ```
 #### Get an iteration
 ```python
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-iteration = client.get_iteration('Self-flying car', 'Sprint 1')
+iteration = client.get_iteration('Contoso', 'Sprint 1')
 ```
 ### Create an area and iteration
 #### Create an area
@@ -132,8 +132,8 @@ from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 area = client.create_area(
-    'Self-flying car',          # Team project name
-    'Engine')                   # Area name
+    'Contoso',  # Team project name
+    'Area 1')   # Area name
 ```
 #### Create an iteration
 ```python
@@ -144,10 +144,10 @@ finish_date = start_date + datetime.timedelta(days=21)  # Ends in 3 weeks
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 iteration = client.create_iteration(
-    'Self-flying car',          # Team project name 
-    'Sprint 1',                 # Iteration name
-    start_date,                 # Start date
-    finish_date)                # End date
+    'Contoso',          # Team project name 
+    'Sprint 1',         # Iteration name
+    start_date,         # Start date
+    finish_date)        # End date
 ```
 
 ## Work items
@@ -176,15 +176,15 @@ client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # Create a JsonPatchDocument and provide the values for the work item fields
 doc = JsonPatchDocument()
-doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Left-side wing'))
-doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Create a left-side wing for our self-flying car.'))
-doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'wing; left'))
+doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Work item 1'))
+doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Work item description.'))
+doc.add(JsonPatchOperation('add', SystemFields.TAGS, 'tag1; tag2'))
 
 # Create a new work item by specifying the project and work item type
 workitem = client.create_workitem(
-    'Self-flying car',          # Team project name
-    'User Story',               # Work item type (e.g. Epic, Feature, User Story etc.)
-    doc)                        # JsonPatchDocument with operations
+    'Contoso',          # Team project name
+    'User Story',       # Work item type (e.g. Epic, Feature, User Story etc.)
+    doc)                # JsonPatchDocument with operations
 ```
 ### Update work items
 ```python
@@ -196,7 +196,7 @@ client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
 # Create a JsonPatchDocument and provide the values for the fields to update
 doc = JsonPatchDocument()
-doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Right-side wing'))
+doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Work item 2'))
 
 # Update work item id 13
 workitem = client.update_workitem(13, doc)
@@ -262,8 +262,8 @@ NOTE: `System.CreatedBy` and `System.CreatedDate` can only be modified using byp
 ```python
 # Set the Created By and Created Date fields
 doc = JsonPatchDocument()
-doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Left-side wing'))
-doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Create a left-side wing for our self-flying car.'))
+doc.add(JsonPatchOperation('add', SystemFields.TITLE, 'Work item 1'))
+doc.add(JsonPatchOperation('add', SystemFields.DESCRIPTION, 'Work item description.'))
 doc.add(JsonPatchOperation('add', SystemFields.CREATED_BY, 'Woody <woody@contoso.com>'))
 doc.add(JsonPatchOperation('add', SystemFields.CREATED_DATE, '01-01-2018'))
 
@@ -274,14 +274,49 @@ client.create_workitem('Contoso', 'User Story', doc, bypass_rules=True)
 ```python
 client.delete_workitem(1)
 ```
+## Fields
+### Create a field
+Create a new field.
+```python
+from vstsclient.vstsclient import VstsClient
 
+client   = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+name     = 'New work item field'
+ref_name = 'new.work.item.field'
+
+field = client.create_field(
+    name,                   # Name 
+    ref_name,               # Reference name
+    'Contoso',              # Project name
+    'Field description',    # Field description
+    'string',               # Field type: boolean, string, dateTime, integer, double, guid, html, identity, plainText, etc.
+    'workItem',             # Field usage: none, tree, workItem, workItemLink or workItemTypeExtension
+    [{                      # Supported operations
+        'referenceName': 'SupportedOperations.Equals',
+        'name': '='
+    }])
+```
+### Get a field
+```python
+ref_name = 'new.workitem.field' # Name or reference name
+prj_name = 'Contoso'            # Project name
+
+field = client.get_field(ref_name, prj_name)
+```
+### Delete a field
+```python
+ref_name = 'new.workitem.field' # Name or reference name
+prj_name = 'Contoso'            # Project name
+
+client.delete_field(ref_name, prj_name)
+```
 ## Work item query language (WIQL)
 ### Run a query
 ```python
 # Specifying the team project is optional
 # Note that the query returns a list of work item ids
 query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'User Story A'"
-result = client.query(query, 'Self-flying car')
+result = client.query(query, 'Contoso')
 
 for row in result.rows:
     workitem_id = row['id']
