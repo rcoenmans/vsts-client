@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # The MIT License (MIT)
-# Copyright (c) 2018 Robbie Coenmans
+# Copyright (c) 2020 Robbie Coenmans
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -96,3 +96,19 @@ class JsonPatchOperation(object):
 class JsonPatchDocument(list):
     def add(self, operation: JsonPatchOperation):
         self.append(operation)
+
+class Field(object):
+    def __init__(self):
+        self.name = None
+        self.description = None
+        self.ref_name = None
+        self.type = None
+        self.usage = None
+        self.read_only = False
+        self.can_sort_by = False
+        self.is_queryable = False
+        self.supported_operations = []
+        self.is_identity = False
+        self.is_picklist = False
+        self.is_picklist_suggested = False
+        self.url = None

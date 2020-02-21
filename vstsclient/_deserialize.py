@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # The MIT License (MIT)
-# Copyright (c) 2018 Robbie Coenmans
+# Copyright (c) 2020 Robbie Coenmans
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,8 @@ from .models import (
     WorkitemType,
     Attachment,
     QueryResult,
-    TestPlan
+    TestPlan,
+    Field
 )
 
 from ._conversion import _utc_string_to_datetime
@@ -122,6 +123,21 @@ def _parse_json_to_testplan(response):
     obj = _map_attrs_values(TestPlan, attrs, response)
     obj.start_date = _utc_string_to_datetime(response['startDate'])
     obj.end_date   = _utc_string_to_datetime(response['endDate'])
+    return obj
+
+def _parse_json_to_field(response):
+    attrs = ['name', 'description', 'type', 'url', 'usage']
+    obj = _map_attrs_values(Field, attrs, response)
+
+    obj.ref_name     = respone['referenceName']
+    obj.read_only    = response['readOnly']
+    obj.can_sort_by  = response['canSortBy']
+    obj.is_identity  = response['isIdentity']
+    obj.is_picklist  = response['isPicklist']
+    obj.is_queryable = response['isQueryable']
+
+    obj.is_picklist_suggested = response['isPicklistSuggested']
+    obj.supported_operations  = response['supportedOperations']
     return obj
 
 def _get_attr_value(attr, values, default=None):

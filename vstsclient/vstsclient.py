@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # The MIT License (MIT)
-# Copyright (c) 2018 Robbie Coenmans
+# Copyright (c) 2020 Robbie Coenmans
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,8 @@ from ._deserialize import (
     _parse_json_to_area,
     _parse_json_to_query_result,
     _parse_json_to_attachment,
-    _parse_json_to_testplan
+    _parse_json_to_testplan,
+    _parse_json_to_field
 )
 
 from ._conversion import _datetime_to_utc_string
@@ -62,7 +63,6 @@ class VstsClient(object):
         )
 
         logging.basicConfig(level=logging.DEBUG, filename='vsts-client.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-
 
     def set_proxy(self, host, port, user, password):
         _validate_not_none('host', host)
@@ -441,7 +441,6 @@ class VstsClient(object):
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request, _parse_json_to_testplan)
 
-
     # POST {account}.visualstudio.com/{collection}/[{project}/]_apis/wit/wiql?api-version=1.0
     def query(self, query, project_name=None):
         _validate_not_none('query', query)
@@ -457,6 +456,69 @@ class VstsClient(object):
             request.path = '/{}/_apis/wit/wiql'.format(project_name)
 
         return self._perform_request(request, _parse_json_to_query_result)
+
+    # POST {account}.visualstudio.com/_apis/wit/fields?api-version=5.1
+    def create_field(self, name, ref_name, project_name=None, description=None, field_type='string', field_usage='workItem', supported_operations=[], read_only=False, can_sort_by=True, is_queryable=True, is_identity=False, is_picklist=False, is_picklist_suggested=False, url=None):
+        _validate_not_none('name', name)
+        _validate_not_none('ref_name', ref_name)
+
+        payload = {
+            'name': name,
+            'description': description,
+            'referenceName': ref_name,
+            'type': field_type,
+            'usage': field_usage,
+            'readOnly': read_only,
+            'canSortBy': can_sort_by,
+            'isQueryable': is_queryable,
+            'supportedOperations': supported_operations,
+            "isIdentity": is_identity,
+            "isPicklist": is_picklist,
+            "isPicklistSuggested": is_picklist_suggested,
+            "url": url
+        }
+
+        request = HTTPRequest()
+        request.method  = 'POST'
+        request.path    = '/_apis/wit/fields'
+        request.query   = 'api-version=5.1'
+        request.headers = { 'Content-Type': 'application/json' }
+        request.body    = json.dumps(payload)
+
+        if project_name is not None:
+            request.path = '/{}/_apis/wit/fields'.format(project_name)
+
+        return self._perform_request(request, _parse_json_to_field)
+
+    # GET {account}.visualstudio.com/{organization}/{project}/_apis/wit/fields/{fieldNameOrRefName}?api-version=5.1
+    def get_field(self, field_name_or_ref_name, project_name=None):
+        _validate_not_none('field_name_or_ref_name', field_name_or_ref_name)
+
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/_apis/wit/fields/{}'.format(field_name_or_ref_name)
+        request.query   = 'api-version=5.1'
+        request.headers = { 'Content-Type': 'application/json' }
+
+        if project_name is not None:
+            request.path = '/{}/_apis/wit/fields/{}'.format(project_name, field_name_or_ref_name)
+
+        return self._perform_request(request, _parse_json_to_field)
+
+    # DELETE {account}.visualstudio.com/{organization}/{project}/_apis/wit/fields/{fieldNameOrRefName}?api-version=5.1
+    def delete_field(self, field_name_or_ref_name, project_name=None):
+        _validate_not_none('field_name_or_ref_name', field_name_or_ref_name)
+
+        request = HTTPRequest()
+        request.method  = 'DELETE'
+        request.path    = '/_apis/wit/fields/{}'.format(field_name_or_ref_name)
+        request.query   = 'api-version=5.1'
+        request.headers = { 'Content-Type': 'application/json' }
+
+        if project_name is not None:
+            request.path = '/{}/_apis/wit/fields/{}'.format(project_name, field_name_or_ref_name)
+
+        self._perform_request(request)
 
 
     def _perform_request(self, request, parser=None):
