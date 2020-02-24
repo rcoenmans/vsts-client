@@ -2,12 +2,10 @@
 A client library for working with Azure DevOps (formerly VSTS) and TFS projects, areas/iterations, sprints, work items and tasks written in Python.
 
 Please feel free to send me a pull request if you've fixed a bug or added a feature.
-
 ## Installation
 ```
 pip install vsts-client
 ```
-
 ## Connecting to Azure DevOps
 In order to connect to Azure DevOps, you need to obtain a [personal access token](https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/pats).  
 ```python
@@ -34,7 +32,6 @@ client = VstsClient('tfs.contoso.com:8080', '<personalaccesstoken>', '<your coll
 ```python
 client.set_proxy('proxy.contoso.com', 8080, '<username>', '<password>')
 ```
-
 ## Team Projects
 ### Get a list of team projects
 Get all team projects in the project collection that the authenticated user has access to.
@@ -70,7 +67,6 @@ project = client.create_project(
     SourceControlType.GIT,      # Source control type: Git or Tfvc
     ProcessTemplate.AGILE)      # Process template: Agile, Scrum or CMMI
 ```
-
 ## Areas and Iterations
 All work items have an area and an iteration field. The values that these fields can have are defined in the [classification hierarchies](http://msdn.microsoft.com/en-us/library/ms181692.aspx).
 ### Get a list of areas and iterations
@@ -149,7 +145,6 @@ iteration = client.create_iteration(
     start_date,         # Start date
     finish_date)        # End date
 ```
-
 ## Work items
 ### By IDs
 ```python
@@ -258,7 +253,7 @@ doc.add(JsonPatchOperation('add', SystemFields.CHANGED_DATE, '01-01-2018'))
 # Set the bypass_rules parameter to True
 client.update_workitem(13, doc, bypass_rules=True)
 ``` 
-NOTE: `System.CreatedBy` and `System.CreatedDate` can only be modified using bypass rules on work item creation, i.e. the first revision of a work item. 
+> `System.CreatedBy` and `System.CreatedDate` can only be modified using bypass rules on work item creation, i.e. the first revision of a work item. 
 ```python
 # Set the Created By and Created Date fields
 doc = JsonPatchDocument()
@@ -314,7 +309,6 @@ client.delete_field(ref_name, prj_name)
 ### Run a query
 ```python
 # Specifying the team project is optional
-# Note that the query returns a list of work item ids
 query  = "Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.Title] = 'User Story A'"
 result = client.query(query, 'Contoso')
 
@@ -322,3 +316,4 @@ for row in result.rows:
     workitem_id = row['id']
     workitem = client.get_workitem(id)
 ```
+> Note that the query returns a list of work item ids
