@@ -197,13 +197,13 @@ doc.add(JsonPatchOperation('replace', SystemFields.TITLE, 'Work item 2'))
 workitem = client.update_workitem(13, doc)
 ``` 
 #### Change work item type
-NOTE: Only supported on Azure DevOps (not on TFS).
+> Only supported on Azure DevOps (not on TFS).
 ```python
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 client.change_workitem_type(13, 'Task')
 ```
 #### Move a work item
-NOTE: Only supported on Azure DevOps (not on TFS).
+> Only supported on Azure DevOps (not on TFS).
 ```python
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 
@@ -244,7 +244,7 @@ client.add_attachment(workitem.id, attachment.url, 'Linking example.png to a wor
 #### Update work items bypassing rules
 Bypassing the rules engine allows you to modify work item fields without any restrictions, for example you can assign a work item to a user no longer in the organization.
 
-To modify the `System.CreatedBy`, `System.CreatedDate`, `System.ChangedBy`, or `System.ChangedDate` fields, you must be a member of the Project Collection Service Acccounts group.
+> To modify the `System.CreatedBy`, `System.CreatedDate`, `System.ChangedBy`, or `System.ChangedDate` fields, you must be a member of the Project Collection Service Acccounts group.
 ```python
 doc = JsonPatchDocument()
 doc.add(JsonPatchOperation('add', SystemFields.CHANGED_BY, 'Woody <woody@contoso.com>'))
