@@ -129,7 +129,7 @@ def _parse_json_to_field(response):
     attrs = ['name', 'description', 'type', 'url', 'usage']
     obj = _map_attrs_values(Field, attrs, response)
 
-    obj.ref_name     = respone['referenceName']
+    obj.ref_name     = response['referenceName']
     obj.read_only    = response['readOnly']
     obj.can_sort_by  = response['canSortBy']
     obj.is_identity  = response['isIdentity']
