@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 if __name__ == "__main__":
     setup(
         name='vsts-client',
-        version='1.2.0',
+        version='1.2.1',
         description='Azure DevOps client library',
         long_description='A Python client library for Azure DevOps/TFS.',
         license='MIT License',
