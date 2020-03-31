@@ -269,6 +269,25 @@ client.create_workitem('Contoso', 'User Story', doc, bypass_rules=True)
 ```python
 client.delete_workitem(1)
 ```
+## Access team and team members in a project
+### Get all teams in a project in a project
+```python
+from vstsclient.vstsclient import VstsClient
+
+client   = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+for team in client.get_teams('project name')['value']:
+    print(str(team))
+```
+### Get members of all teams in a project
+```python
+from vstsclient.vstsclient import VstsClient
+
+client   = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+project_name = 'project name'
+for team in client.get_teams(project_name)['value']:
+	for dev in client.get_team_members(project_name, team['id'])['value']:
+		print(dev['identity']['displayName']] + ': ' + dev['identity']['uniqueName'])
+```
 ## Fields
 ### Create a field
 Create a new field.
