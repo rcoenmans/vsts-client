@@ -415,6 +415,29 @@ class VstsClient(object):
             )
         )
         return self.update_workitem(workitem_id, doc)
+    
+    # GET {account}.visualstudio.com/{collection}/_apis/projects/{project}/teams
+    def get_teams(self, project_name):
+        _validate_not_none('project_name', project_name)
+        
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/_apis/projects/{}/teams'.format(project_name)
+        request.query   = 'api-version=5.1&$expand=all'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+
+    # GET {account}.visualstudio.com/{collection}/_apis/projects/{project}/teams/{team_id}/members
+    def get_team_members(self, project_name, team_id):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('team_id', team_id)
+
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/_apis/projects/{}/teams/{}/members'.format(project_name, team_id)
+        request.query   = 'api-version=5.1&$expand=all'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
 
     # POST {account}.visualstudio.com/{collection}/{project}/_apis/test/plans?api-version=1.0
     def create_testplan(self, project_name, name, description='', start_date=None, end_date=None):
@@ -519,7 +542,6 @@ class VstsClient(object):
             request.path = '/{}/_apis/wit/fields/{}'.format(project_name, field_name_or_ref_name)
 
         self._perform_request(request)
-
 
     def _perform_request(self, request, parser=None):
         request.host = self.instance
