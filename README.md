@@ -336,3 +336,22 @@ for row in result.rows:
     workitem = client.get_workitem(id)
 ```
 > Note that the query returns a list of work item ids
+## Get infos about API of the server
+You can obtain information about version of API supported by your server for each topic (git, wit, etc):
+```python
+client.get_API_infos('wit')
+```
+It return an array of info about specific API endpoints. For example with workitems comments accessed by revision (this API has been introduced in version 3.0, removed after version 5.0):
+```python
+{
+    'area': 'wit',
+    'id': '19335ae7-22f7-4308-93d8-261f9384b7cf',
+    'maxVersion': '5.0',
+    'minVersion': '3.0',
+    'releasedVersion': '0.0',
+    'resourceName': 'comments',
+    'resourceVersion': 2,
+    'routeTemplate': '{project}/_apis/{area}/workItems/{id}/comments/{revision}'
+}
+```
+Please see [this Github issue from MicrosoftDocs/vsts-docs](https://github.com/MicrosoftDocs/vsts-docs/issues/1567) for detailed explanation about this version API.
