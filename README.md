@@ -288,6 +288,36 @@ for team in client.get_teams(project_name)['value']:
 	for dev in client.get_team_members(project_name, team['id'])['value']:
 		print(dev['identity']['displayName']] + ': ' + dev['identity']['uniqueName'])
 ```
+## Managing comments of workitems
+### Get all comments of a workitem
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+comments = client.get_comments_from_workitem('project', 73)
+```
+### Get specific comment of a workitem
+Comments inside a workitem are indexed by comment id.
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+comment = client.get_comment_from_workitem('project', 73, 8307896)
+```
+### Add a comment of a workitem
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+comment = client.create_comment('project', 73, 'This is a test comment!')
+```
+### Removing a comment of a workitem
+```python
+from vstsclient.vstsclient import VstsClient
+
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+client.delete_comment('project', 73, 8307896)
+```
 ## Fields
 ### Create a field
 Create a new field.
@@ -341,7 +371,7 @@ You can obtain information about version of API supported by your server for eac
 ```python
 client.get_API_infos('wit')
 ```
-It return an array of info about specific API endpoints. For example with workitems comments accessed by revision (this API has been introduced in version 3.0, removed after version 5.0):
+It return an array of info about specific API endpoints. For example with workitems comments accessed by revision (this API has):
 ```python
 {
     'area': 'wit',
