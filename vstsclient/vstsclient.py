@@ -68,6 +68,15 @@ class VstsClient(object):
         _validate_not_none('host', host)
         self._http_client.set_proxy(host, port, user, password)
 
+    # OPTIONS {account}.visualstudio.com/{collection}/_apis/{}
+    def get_API_infos(self, item):
+        request = HTTPRequest()
+        request.method  = 'OPTIONS'
+        request.path    = '/_apis/{}'.format(item)
+        request.query   = ''
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+
     # GET {account}.visualstudio.com/{collection}/_apis/projects
     def get_projects(self, state='WellFormed', top=100, skip=0):
         request = HTTPRequest()
@@ -324,6 +333,58 @@ class VstsClient(object):
         request.headers = {'content-type': 'application/json-patch+json'}
         self._perform_request(request)
 
+    # GET {account}.visualstudio.com/{collection}/_apis/wit/workitems/{workitem_id}/comments
+    def get_comments_from_workitem(self, project, workitem_id):
+        _validate_not_none('project', project)
+        _validate_not_none('workitem_id', workitem_id)
+
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/{}/_apis/wit/workitems/{}/comments'.format(project, workitem_id)
+        request.query   = 'api-version=5.1-preview.3&$expand=all'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+    
+    # GET {account}.visualstudio.com/{collection}/{project}/_apis/wit/workitems/{workitem_id}/comments/{comment_id}
+    def get_comment_from_workitem(self, project, workitem_id, comment_id):
+        _validate_not_none('project', project)
+        _validate_not_none('workitem_id', workitem_id)
+        _validate_not_none('comment_id', comment_id)
+
+        request = HTTPRequest()
+        request.method  = 'GET'
+        request.path    = '/{}/_apis/wit/workitems/{}/comments/{}'.format(project, workitem_id, comment_id)
+        request.query   = 'api-version=5.1-preview.3&$expand=all'
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+
+    # POST {account}.visualstudio.com/{collection}/{project_name}/_apis/wit/workitems/{workitem_id}/comments
+    def create_comment(self, project_name, workitem_id, text, bypass_rules=False):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('workitem_id', workitem_id)
+        _validate_not_none('text', text)
+        
+        request = HTTPRequest()
+        request.method  = 'POST'
+        request.path    = '/{}/_apis/wit/workitems/{}/comments'.format(project_name, workitem_id)
+        request.query   = 'api-version=5.1-preview.3&bypassRules={}'.format(bypass_rules)
+        request.body    = json.dumps({'text': text})
+        request.headers = {'content-type': 'application/json'}
+        return self._perform_request(request)
+
+    # DELETE {account}.visualstudio.com/{collection}/{project_name}/_apis/wit/workitems/{workitem_id}/comments/{comment_revision}
+    def delete_comment(self, project_name, workitem_id, comment_revision):
+        _validate_not_none('project_name', project_name)
+        _validate_not_none('workitem_id', workitem_id)
+        _validate_not_none('comment_revision', comment_revision)
+
+        request = HTTPRequest()
+        request.method  = 'DELETE'
+        request.path    = '/{}/_apis/wit/workitems/{}/comments/{}'.format(project_name, workitem_id, comment_revision)
+        request.query   = 'api-version=5.1-preview.3'
+        request.headers = {'content-type': 'application/json'}
+        self._perform_request(request)
+
     def add_tags(self, workitem_id: int, tags: list):
         _validate_not_none('workitem_id', workitem_id)
         _validate_not_none('tags', tags)
@@ -556,6 +617,9 @@ class VstsClient(object):
 
         if response.status >= 300:
             raise HTTPError(response.status, response.message, response.headers, response.body)
+
+        if response.body == b'':
+            return None
 
         result = json.loads(response.body.decode('UTF-8'))
 
