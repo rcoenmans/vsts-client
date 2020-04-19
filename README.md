@@ -288,35 +288,41 @@ for team in client.get_teams(project_name)['value']:
 	for dev in client.get_team_members(project_name, team['id'])['value']:
 		print(dev['identity']['displayName']] + ': ' + dev['identity']['uniqueName'])
 ```
-## Managing comments of workitems
-### Get all comments of a workitem
+## Managing comments of work items
+### Get all comments of a work item
 ```python
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 comments = client.get_comments_from_workitem('project', 73)
 ```
-### Get specific comment of a workitem
-Comments inside a workitem are indexed by comment id.
+### Get specific comment of a work item
+Comments inside a work item are indexed by comment id.
 ```python
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-comment = client.get_comment_from_workitem('project', 73, 8307896)
+
+workitem_id = 73
+comment_id  = 8307896
+comment     = client.get_comment_from_workitem('project', workitem_id, comment_id)
 ```
-### Add a comment of a workitem
+### Add a comment of a work item
 ```python
 from vstsclient.vstsclient import VstsClient
 
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
 comment = client.create_comment('project', 73, 'This is a test comment!')
 ```
-### Removing a comment of a workitem
+### Removing a comment of a work item
 ```python
 from vstsclient.vstsclient import VstsClient
 
+workitem_id = 73
+comment_id  = 8307896
+
 client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
-client.delete_comment('project', 73, 8307896)
+client.delete_comment('project', workitem_id, comment_id)
 ```
 ## Fields
 ### Create a field
@@ -366,12 +372,13 @@ for row in result.rows:
     workitem = client.get_workitem(id)
 ```
 > Note that the query returns a list of work item ids
-## Get infos about API of the server
-You can obtain information about version of API supported by your server for each topic (git, wit, etc):
+## Supported API version in Azure DevOps and TFS
+You can obtain information about supported API versions of your server for each topic (git, wit, etc). Please see [this Github issue from MicrosoftDocs/vsts-docs](https://github.com/MicrosoftDocs/vsts-docs/issues/1567) for detailed explanation about this version API.
 ```python
-client.get_API_infos('wit')
+client = VstsClient('dev.azure.com/<account>', '<personalaccesstoken>')
+client.get_api_info('wit')
 ```
-It return an array of info about specific API endpoints. For example with workitems comments accessed by revision (this API has):
+The call `get_api_info()` returns an array of supported API versions. For example with work item comments accessed by revision (this API has):
 ```python
 {
     'area': 'wit',
@@ -384,4 +391,3 @@ It return an array of info about specific API endpoints. For example with workit
     'routeTemplate': '{project}/_apis/{area}/workItems/{id}/comments/{revision}'
 }
 ```
-Please see [this Github issue from MicrosoftDocs/vsts-docs](https://github.com/MicrosoftDocs/vsts-docs/issues/1567) for detailed explanation about this version API.

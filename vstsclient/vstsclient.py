@@ -69,11 +69,10 @@ class VstsClient(object):
         self._http_client.set_proxy(host, port, user, password)
 
     # OPTIONS {account}.visualstudio.com/{collection}/_apis/{}
-    def get_API_infos(self, item):
+    def get_api_info(self, item):
         request = HTTPRequest()
         request.method  = 'OPTIONS'
         request.path    = '/_apis/{}'.format(item)
-        request.query   = ''
         request.headers = {'content-type': 'application/json'}
         return self._perform_request(request)
 
