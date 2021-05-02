@@ -55,5 +55,5 @@ if __name__ == "__main__":
         ],
         zip_safe=False,
         packages=find_packages(),
-        install_requires=['requests', 'logging', 'json', 'base64']
+        install_requires=['requests', 'logging']
     )
